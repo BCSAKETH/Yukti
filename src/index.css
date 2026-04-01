@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme {
+  --font-headline: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-primary: #005050;
+  --color-primary-container: #006a6a;
+  --color-secondary: #3a5f94;
+  --color-surface: #f8f9fa;
+  --color-on-surface: #191c1d;
+  --color-on-surface-variant: #3e4948;
+  --color-outline: #6e7979;
+  --color-outline-variant: #bec9c8;
+}
+
+@layer utilities {
+  .signature-gradient {
+    background: linear-gradient(135deg, #0d9488 0%, #065f46 100%);
+  }
+
+  .premium-shadow {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02), 0 20px 25px -5px rgba(0, 0, 0, 0.03);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .mesh-gradient-light {
+    background-color: #ffffff;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(170,100%,98%,1) 0, transparent 50%), 
+      radial-gradient(at 50% 0%, hsla(190,100%,98%,1) 0, transparent 50%), 
+      radial-gradient(at 100% 0%, hsla(210,100%,98%,1) 0, transparent 50%);
+  }
+
+  .animate-shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+
+  .animate-shake-minor {
+    animation: shake-minor 0.3s cubic-bezier(.36,.07,.19,.97) both;
+  }
+
+  @keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+    40%, 60% { transform: translate3d(12px, 0, 0); }
+  }
+
+  @keyframes shake-minor {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+  }
+
+  /* Boardroom 3D Utilities */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .studio-floor {
+    background: radial-gradient(circle at 50% 50%, rgba(20, 184, 166, 0.1) 0%, transparent 80%);
+    box-shadow: inset 0 -100px 100px -100px rgba(0, 0, 0, 0.8);
+  }
+
+  .boardroom-stage {
+    background: radial-gradient(ellipse at center, rgba(20, 184, 166, 0.15) 0%, transparent 70%);
+    transform: rotateX(75deg) translateY(200px);
+    height: 600px;
+    width: 200%;
+    left: -50%;
+    bottom: -100px;
+    position: absolute;
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  .shark-spotlight {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 400px;
+    background: radial-gradient(ellipse at top, var(--spotlight-color) 0%, transparent 70%);
+    opacity: 0.3;
+    pointer-events: none;
+    filter: blur(30px);
+  }
+
+  .shark-card-active {
+    filter: drop-shadow(0 0 20px currentColor);
+  }
+}
