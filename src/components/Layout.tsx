@@ -73,61 +73,57 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   };
 
   return (
-    <aside className="h-screen w-64 fixed left-0 top-0 bg-slate-100 flex flex-col py-10 px-6 z-50 border-r border-slate-200">
-      <div className="mb-12">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
-            <Zap size={24} fill="currentColor" />
-          </div>
-          <span className="font-headline font-black text-indigo-950 text-2xl tracking-tighter">Yukti</span>
+    <aside className="fixed left-6 top-1/2 -translate-y-1/2 w-20 flex flex-col items-center py-8 z-50 glass-card rounded-[2.5rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
+      <div className="mb-10">
+        <div className="w-12 h-12 rounded-2xl bg-teal-600 flex items-center justify-center text-white shadow-xl shadow-teal-500/20 group cursor-pointer">
+          <Zap size={22} fill="currentColor" className="group-hover:scale-110 transition-transform" />
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Master the Art of Execution</p>
       </div>
 
-      <nav className="flex-1 space-y-2">
+      <nav className="flex-1 flex flex-col gap-4">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setActiveTab(item.id)}
             className={cn(
-              "w-full flex items-center gap-4 py-3 px-4 rounded-xl transition-all duration-300 font-headline relative group",
+              "p-4 rounded-2xl transition-all duration-300 relative group",
               activeTab === item.id 
-                ? "text-teal-900 font-bold bg-white shadow-sm border border-slate-200" 
-                : "text-slate-500 hover:text-teal-800 hover:bg-white/50"
+                ? "text-teal-600 bg-white shadow-lg border border-teal-100" 
+                : "text-slate-400 hover:text-teal-600 hover:bg-white/50"
             )}
+            title={item.label}
           >
             {activeTab === item.id && (
               <motion.div 
                 layoutId="active-tab-indicator"
-                className="absolute left-0 w-1 h-6 bg-teal-600 rounded-r-full"
+                className="absolute inset-0 bg-teal-50/20 rounded-2xl -z-10"
               />
             )}
-            <item.icon size={20} className={cn(activeTab === item.id ? "text-teal-600" : "text-slate-400 group-hover:text-teal-600")} />
-            <span className="text-lg">{item.label}</span>
+            <item.icon size={22} className={cn(activeTab === item.id ? "text-teal-600" : "text-slate-400 group-hover:text-teal-600")} />
+            
+            {/* Tooltip on hover */}
+            <div className="absolute left-full ml-4 px-3 py-1.5 bg-slate-900 text-white text-[10px] font-black uppercase tracking-widest rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all translate-x-3 group-hover:translate-x-0 whitespace-nowrap shadow-2xl z-[100]">
+              {item.label}
+            </div>
           </button>
         ))}
       </nav>
 
-      <div className="mt-auto pt-10">
-        <div className="p-4 rounded-2xl bg-slate-200/50 flex items-center gap-3 relative group">
-          <img 
-            src={user?.photoURL || "https://i.pravatar.cc/150?u=alex"} 
-            alt={user?.displayName || "User"} 
-            className="w-10 h-10 rounded-full border-2 border-primary/20"
-            referrerPolicy="no-referrer"
-          />
-          <div className="overflow-hidden flex-1">
-            <p className="font-bold text-sm text-on-surface truncate">{user?.displayName || "Architect"}</p>
-            <p className="text-xs text-on-surface-variant truncate">{user?.email}</p>
-          </div>
-          <button 
+      <div className="mt-10 flex flex-col gap-4">
+         <button 
             onClick={handleLogout}
-            className="p-2 text-slate-400 hover:text-red-600 transition-colors"
+            className="p-4 rounded-2xl text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all border border-transparent hover:border-red-100"
             title="Sign Out"
           >
-            <LogOut size={16} />
+            <LogOut size={20} />
           </button>
-        </div>
+          
+          <img 
+            src={user?.photoURL || "https://api.dicebear.com/7.x/avataaars/svg?seed=architect"} 
+            alt={user?.displayName || "User"} 
+            className="w-10 h-10 rounded-2xl border-2 border-teal-500/20 grayscale hover:grayscale-0 transition-all cursor-pointer"
+            referrerPolicy="no-referrer"
+          />
       </div>
     </aside>
   );
@@ -214,7 +210,7 @@ export function TopBar({ activeTab, setActiveTab }: { activeTab: string; setActi
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-slate-50/80 backdrop-blur-md h-20 px-10 flex justify-between items-center border-b border-slate-200">
+    <header className="fixed top-0 right-0 w-[calc(100%-8rem)] z-40 bg-white/20 backdrop-blur-xl h-20 px-10 flex justify-between items-center border-b border-white/20">
       <div className="flex items-center gap-6 flex-1">
         {/* Top Search Engine */}
         <div className="relative" ref={searchRef}>
