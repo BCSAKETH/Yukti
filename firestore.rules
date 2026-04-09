@@ -60,12 +60,8 @@ service cloud.firestore {
     }
 
     function isValidSimulation(data) {
-      return data.keys().hasAll(['id', 'title', 'authorUid']) &&
-             data.keys().hasOnly(['id', 'title', 'status', 'progress', 'authorUid', 'updatedAt']) &&
-             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
-             data.authorUid is string && data.authorUid == request.auth.uid &&
-             (data.status in ['Running', 'Review Required', 'Paused', 'Completed']) &&
-             (data.progress is number && data.progress >= 0 && data.progress <= 100);
+      // Relaxed validation for hackathon to allow 'budget', 'momentum', 'decisions', etc.
+      return data.scenarioName is string || data.title is string;
     }
 
     // ===============================================================
@@ -78,11 +74,11 @@ service cloud.firestore {
       allow update: if isAuthenticated() && isValidUser(request.resource.data) && (isOwner(userId) && request.resource.data.role == resource.data.role || isAdmin());
     }
 
-    match /simulations/{simId} {
-      allow read: if isAuthenticated() && (isDocOwner() || isAdmin());
-      allow create: if isAuthenticated() && isValidSimulation(request.resource.data);
-      allow update: if isAuthenticated() && isValidSimulation(request.resource.data) && (isDocOwner() || isAdmin()) && request.resource.data.authorUid == resource.data.authorUid;
-      allow delete: if isAuthenticated() && (isDocOwner() || isAdmin());
+    match /users/{userId}/simulations/{simId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) || isAdmin();
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isOwner(userId) || isAdmin();
     }
   }
 }

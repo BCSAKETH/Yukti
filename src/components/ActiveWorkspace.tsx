@@ -91,16 +91,16 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
         ${isBankrupt ? 'CRITICAL: Out of funds! Focus on emergency measures.' : ''}
         ${previousChoiceText ? `The user last decided: "${previousChoiceText}". Respond specifically to this.` : 'This is the start.'}
         
-        Generate a new scenario JSON:
+        Generate a deeply analytical, multi-layered scenario JSON:
         {
           "title": "Short title",
-          "description": "Detailed 2-3 sentence description of the dilemma.",
-          "quote": "A quote from a stakeholder",
-          "visual_keyword": "A single descriptive word for an image (e.g., 'solar-farm')",
+          "description": "Provide a hyper-specific, highly detailed 3-4 sentence scenario that introduces real operational bottlenecks, competitive threats, market mechanics, or scaling roadblocks related to the decision.",
+          "quote": "A brutally honest quote from a stakeholder",
+          "visual_keyword": "A single descriptive word for an image (e.g., 'supply-chain-crisis')",
           "stakeholder_reaction": { 
             "name": "Stakeholder Name", 
             "role": "Role", 
-            "message": "Reaction to user's PREVIOUS action: '${previousChoiceText}'. Was it smart? risky? Why?" 
+            "message": "Reaction to user's PREVIOUS action: '${previousChoiceText}'. Dive deep into exactly WHY it was a massive success or a risky failure. Be specific about market data or human impact." 
           },
           "options": [
             { "text": "Option 1", "effect_trust": 5, "effect_impact": 10, "effect_budget": -5000, "effect_momentum": 5 },

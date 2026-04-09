@@ -32,13 +32,42 @@ function WebcamFeed() {
   }, []);
 
   return (
-    <div className="w-full h-full bg-slate-950 flex items-center justify-center rounded-[2rem] overflow-hidden">
-      {stream ? (
-        <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover mirror" />
-      ) : (
-        <div className="text-white/20 flex flex-col items-center gap-2">
+    <div className="w-full h-full bg-slate-950 flex items-center justify-center rounded-[2rem] overflow-hidden relative group">
+      <video 
+        ref={videoRef} 
+        autoPlay 
+        playsInline 
+        muted 
+        className={cn("w-full h-full object-cover mirror", !stream && "hidden")} 
+      />
+      
+      {!stream && (
+        <div className="text-white/20 flex flex-col items-center gap-2 absolute z-10">
           <CameraOff size={16} />
           <span className="text-[6px] font-black uppercase tracking-widest text-center">Founder View<br/>Inactive</span>
+        </div>
+      )}
+      
+      {/* AI Coach HUD Overlay */}
+      {stream && (
+        <div className="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between">
+            <div className="flex justify-between items-start">
+               <div className="border border-white/20 bg-black/40 backdrop-blur-md rounded-lg px-2 py-1 flex items-center gap-2">
+                 <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+                 <span className="text-[10px] text-white font-bold uppercase tracking-widest">Posture OK</span>
+               </div>
+               <div className="border border-white/20 bg-black/40 backdrop-blur-md rounded-lg px-2 py-1 flex flex-col items-center">
+                 <span className="text-[8px] text-white/70 font-black uppercase">Pacing (WPM)</span>
+                 <span className="text-xs text-white font-black">Optimal</span>
+               </div>
+            </div>
+            <div className="w-full flex justify-center">
+               <div className="animate-[scan_3s_ease-in-out_infinite] w-full h-[1px] bg-emerald-500/50 absolute top-1/2 shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+               <div className="border border-white/20 bg-black/50 backdrop-blur-md rounded-full px-4 py-1.5 flex items-center gap-3">
+                 <Brain size={12} className="text-primary" />
+                 <span className="text-[10px] text-white font-black tracking-widest">AI EYE CONTACT TRACKING</span>
+               </div>
+            </div>
         </div>
       )}
     </div>
@@ -127,8 +156,16 @@ export function AIMeetingRoom({ onClose }: { onClose: () => void }) {
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
+    const handleVisChange = () => {
+      if (document.hidden && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisChange);
+
     // Stop speech synthesis on unmount
     return () => {
+      document.removeEventListener('visibilitychange', handleVisChange);
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
       }

@@ -250,7 +250,7 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
   const renderJourneyMap = () => {
     const progress = (step / maxSteps) * 100;
     return (
-      <div className="w-full bg-slate-100 border-4 border-slate-900 rounded-full h-8 relative p-1 overflow-hidden">
+      <div className="w-full bg-slate-50 dark:bg-slate-700/80 border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm rounded-full h-8 relative p-1 overflow-hidden">
         <div className="absolute inset-0 flex justify-between px-4 items-center">
            <Tent size={14} className={cn("z-10", step >= 1 ? "text-slate-900" : "text-slate-300")} />
            <Factory size={14} className={cn("z-10", step >= maxSteps / 2 ? "text-slate-900" : "text-slate-300")} />
@@ -264,7 +264,7 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
            <motion.div 
              animate={{ y: [0, -2, 0] }}
              transition={{ repeat: Infinity, duration: 0.5 }}
-             className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 bg-white border-2 border-slate-900 rounded-full flex items-center justify-center shadow-lg"
+             className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 bg-white border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg"
            >
               <span className="text-[10px]">{selectedHero === 'Visionary' ? '🔭' : '🔨'}</span>
            </motion.div>
@@ -287,7 +287,7 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
                  onClick={() => selectPerk(p)}
                  className="bg-white border-8 border-slate-900 rounded-[2.5rem] p-6 hover:-translate-y-2 transition-all shadow-[8px_8px_0px_0px_rgba(15,23,42,1)] group"
                >
-                 <div className={cn("w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-slate-50 border-4 border-slate-900", p.color)}>
+                 <div className={cn("w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-white dark:bg-slate-800/80 border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm", p.color)}>
                     <p.icon size={32} />
                  </div>
                  <h3 className="font-black text-lg uppercase leading-tight mb-2">{p.name}</h3>
@@ -306,7 +306,7 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
       <div className="max-w-md mx-auto pt-10">
         <div className="bg-white border-8 border-slate-900 rounded-[3rem] p-10 space-y-8 shadow-[16px_16px_0px_0px_rgba(15,23,42,1)] relative overflow-hidden">
           <div className="flex items-center gap-4">
-             <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white border-4 border-slate-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-3">
+             <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] -rotate-3">
                <Rocket size={32} fill="currentColor" />
              </div>
              <h2 className="text-4xl font-black uppercase italic tracking-tighter leading-none">Impact<br />Sprint</h2>
@@ -315,12 +315,12 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
             value={idea}
             onChange={(e) => setIdea(e.target.value)}
             placeholder="Type your big idea here..."
-            className="w-full h-32 p-6 bg-slate-50 border-4 border-slate-900 rounded-2xl outline-none focus:bg-white transition-all font-bold text-lg"
+            className="w-full h-32 p-6 bg-white dark:bg-slate-800/80 border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm rounded-2xl outline-none focus:bg-white transition-all font-bold text-lg"
           />
           <button 
             onClick={() => setMode('hero')}
             disabled={!idea.trim()}
-            className="w-full py-6 bg-primary text-white border-4 border-slate-900 rounded-2xl font-black text-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 active:translate-y-2 transition-all uppercase italic"
+            className="w-full py-6 bg-primary text-white border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm rounded-2xl font-black text-2xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] hover:translate-y-1 active:translate-y-2 transition-all uppercase italic"
           >
             START SPRINT →
           </button>
@@ -341,10 +341,10 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
                onClick={() => { setSelectedHero(key as any); setMode('play'); }}
                className="bg-white border-8 border-slate-900 rounded-[3rem] p-8 transition-all hover:-translate-y-4 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] flex flex-col items-center group"
              >
-               <div className="h-48 w-full mb-6 bg-slate-50 rounded-2xl border-4 border-slate-900 flex items-center justify-center p-4">
+               <div className="h-48 w-full mb-6 bg-white dark:bg-slate-800/80 rounded-2xl border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm flex items-center justify-center p-4">
                  <img src={h.image} alt={h.name} className="h-full object-contain" />
                </div>
-               <div className={cn("px-6 py-2 rounded-xl text-white font-black uppercase italic text-lg border-2 border-slate-900 mb-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]", h.accent)}>
+               <div className={cn("px-6 py-2 rounded-xl text-white font-black uppercase italic text-lg border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm mb-4 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]", h.accent)}>
                  {h.name}
                </div>
                <p className="text-slate-400 font-bold italic text-sm">{h.slogan}</p>
@@ -359,7 +359,7 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
   if (mode === 'report') {
      return (
        <div className="max-w-3xl mx-auto pt-4 pb-20">
-          <div className="bg-white border-8 border-slate-900 rounded-[3.5rem] p-10 shadow-[24px_24px_0px_0px_rgba(15,23,42,1)] relative">
+          <div className="bg-white/95 backdrop-blur-xl dark:bg-slate-900/90 border border-white/20 dark:border-slate-700/50 rounded-[3.5rem] p-10 shadow-2xl backdrop-blur-xl relative">
             <div className="text-center mb-10">
               <div className="inline-block bg-slate-900 text-white px-6 py-1 rounded-full font-black text-[10px] uppercase tracking-[0.3em] mb-4">Strategic Dossier</div>
               <h2 className="text-5xl font-black uppercase italic italic tracking-tighter">Impact Audit</h2>
@@ -367,13 +367,13 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
 
             <div className="space-y-4 mb-10">
                {history.map((h, i) => (
-                 <div key={i} className="flex items-center gap-4 p-4 bg-slate-50 border-4 border-slate-900 rounded-2xl">
-                    <div className={cn("w-12 h-12 rounded-xl border-2 border-slate-900 flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_0px_black]", h.impact >= 10 ? "bg-emerald-400" : h.impact < 0 ? "bg-red-400" : "bg-blue-400")}>
+                 <div key={i} className="flex items-center gap-4 p-4 bg-white dark:bg-slate-800/80 border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm rounded-2xl">
+                    <div className={cn("w-12 h-12 rounded-xl border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm flex items-center justify-center flex-shrink-0 shadow-[2px_2px_0px_0px_black]", h.impact >= 10 ? "bg-emerald-400" : h.impact < 0 ? "bg-red-400" : "bg-blue-400")}>
                       {h.impact >= 0 ? <TrendingUp size={24} /> : <TrendingDown size={24} />}
                     </div>
                     <div className="flex-1 min-w-0">
                        <p className="text-[10px] font-black uppercase text-slate-400 mb-0.5">Round {h.step}: {h.challengeTitle}</p>
-                       <p className="font-bold text-slate-800 leading-tight">{h.choice}</p>
+                       <p className="font-bold text-slate-800 dark:text-slate-100 leading-tight">{h.choice}</p>
                     </div>
                     <div className="text-right">
                        <p className={cn("font-black text-xl italic", h.impact >= 0 ? "text-emerald-600" : "text-red-600")}>
@@ -410,13 +410,13 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
                  <span className="font-black text-slate-400 text-[10px] uppercase">Maturity</span>
                  <span className="text-3xl font-black italic">{score}%</span>
               </div>
-              <div className="h-10 bg-slate-100 border-4 border-slate-900 rounded-full overflow-hidden p-1">
+              <div className="h-10 bg-slate-50 dark:bg-slate-700/80 border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm rounded-full overflow-hidden p-1">
                 <motion.div initial={{ width: 0 }} animate={{ width: `${score}%` }} className="h-full bg-primary rounded-full" />
               </div>
            </div>
            <div className="flex gap-4">
-             <button onClick={() => { setMode('hero'); setStep(1); setScore(50); setEnergy(100); setHistory([]); }} className="flex-1 py-4 bg-slate-50 border-2 border-slate-900 rounded-2xl font-black">REBOOT</button>
-             <button onClick={() => onComplete(score)} className="flex-2 py-4 px-6 bg-primary text-white border-2 border-slate-900 rounded-2xl font-black">CONTINUE →</button>
+             <button onClick={() => { setMode('hero'); setStep(1); setScore(50); setEnergy(100); setHistory([]); }} className="flex-1 py-4 bg-white dark:bg-slate-800/80 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm rounded-2xl font-black">REBOOT</button>
+             <button onClick={() => onComplete(score)} className="flex-2 py-4 px-6 bg-primary text-white border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm rounded-2xl font-black">CONTINUE →</button>
            </div>
         </div>
       </div>
@@ -498,7 +498,7 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
                   <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
                     <h3 className={cn(
                       "text-2xl font-black leading-tight border-l-8 pl-4 italic",
-                      isGodMode ? "text-white border-red-500" : "text-slate-800 border-primary"
+                      isGodMode ? "text-white border-red-500" : "text-slate-800 dark:text-slate-100 border-primary"
                     )}>
                       {loading ? "Generating..." : (typeof challenge?.scene === 'string' ? challenge.scene : JSON.stringify(challenge?.scene))}
                     </h3>
@@ -512,7 +512,7 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
                              "p-5 border-4 rounded-2xl text-left font-black group transition-all shadow-[6px_6px_0px_0px_black] active:translate-y-1 relative overflow-hidden",
                              isGodMode 
                                ? "bg-slate-800 border-red-600 text-white hover:bg-slate-700 hover:border-red-400" 
-                               : "bg-slate-50 border-slate-900 hover:bg-primary/5 hover:border-primary",
+                               : "bg-white dark:bg-slate-800/80 border-slate-900 hover:bg-primary/5 hover:border-primary",
                              isCrisis && !isGodMode ? "hover:bg-red-50 hover:border-red-600" : ""
                            )}
                          >
@@ -593,21 +593,21 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white border-4 border-slate-900 p-4 rounded-2xl shadow-[6px_6px_0px_0px_black]">
+            <div className="bg-white border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm p-4 rounded-2xl shadow-[6px_6px_0px_0px_black]">
                <div className="flex items-center justify-between mb-2">
                   <span className="text-[9px] font-black uppercase text-slate-400">Concept maturity</span>
                   <span className="text-xl font-black italic text-primary">{score}%</span>
                </div>
-               <div className="h-6 bg-slate-100 border-2 border-slate-900 rounded-full overflow-hidden p-0.5">
+               <div className="h-6 bg-slate-50 dark:bg-slate-700/80 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm rounded-full overflow-hidden p-0.5">
                   <motion.div animate={{ width: `${score}%` }} className="h-full bg-primary rounded-full shadow-[0_0_10px_rgba(20,184,166,0.3)]" />
                </div>
             </div>
-            <div className="bg-white border-4 border-slate-900 p-4 rounded-2xl shadow-[6px_6px_0px_0px_black]">
+            <div className="bg-white border-2 border-slate-200/50 dark:border-slate-700/50 shadow-md backdrop-blur-sm p-4 rounded-2xl shadow-[6px_6px_0px_0px_black]">
                <div className="flex items-center justify-between mb-2">
                   <span className="text-[9px] font-black uppercase text-slate-400">Mental Energy</span>
                   <span className="text-xl font-black italic text-amber-500">{energy}%</span>
                </div>
-               <div className="h-6 bg-slate-100 border-2 border-slate-900 rounded-full overflow-hidden p-0.5">
+               <div className="h-6 bg-slate-50 dark:bg-slate-700/80 border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-sm rounded-full overflow-hidden p-0.5">
                   <motion.div animate={{ width: `${energy}%` }} className="h-full bg-amber-400 rounded-full" />
                </div>
             </div>

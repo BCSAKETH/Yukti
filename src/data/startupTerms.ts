@@ -1456,5 +1456,341 @@ export const EXTENDED_DICTIONARY_TERMS = [
     "category": "Web3",
     "definition": "Tokenomics refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
     "example": "Founders heavily rely on Tokenomics when scaling their business."
+  },
+  {
+    "id": "advanced-scaling-legal",
+    "term": "Advanced Scaling & Legal",
+    "category": "Web3",
+    "definition": "Advanced Scaling & Legal refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Advanced Scaling & Legal when scaling their business."
+  },
+  {
+    "id": "decacorn",
+    "term": "Decacorn",
+    "category": "Web3",
+    "definition": "Decacorn refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Decacorn when scaling their business."
+  },
+  {
+    "id": "hectocorn",
+    "term": "Hectocorn",
+    "category": "Web3",
+    "definition": "Hectocorn refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Hectocorn when scaling their business."
+  },
+  {
+    "id": "growth-equity",
+    "term": "Growth Equity",
+    "category": "Web3",
+    "definition": "Growth Equity refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Growth Equity when scaling their business."
+  },
+  {
+    "id": "mezzanine-financing",
+    "term": "Mezzanine Financing",
+    "category": "Web3",
+    "definition": "Mezzanine Financing refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Mezzanine Financing when scaling their business."
+  },
+  {
+    "id": "venture-debt",
+    "term": "Venture Debt",
+    "category": "Web3",
+    "definition": "Venture Debt refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Venture Debt when scaling their business."
+  },
+  {
+    "id": "convertible-debt",
+    "term": "Convertible Debt",
+    "category": "Web3",
+    "definition": "Convertible Debt refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Convertible Debt when scaling their business."
+  },
+  {
+    "id": "esop-pool",
+    "term": "ESOP Pool",
+    "category": "Web3",
+    "definition": "ESOP Pool refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on ESOP Pool when scaling their business."
+  },
+  {
+    "id": "clawback",
+    "term": "Clawback",
+    "category": "Web3",
+    "definition": "Clawback refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Clawback when scaling their business."
+  },
+  {
+    "id": "pay-to-play",
+    "term": "Pay to Play",
+    "category": "Web3",
+    "definition": "Pay to Play refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Pay to Play when scaling their business."
+  },
+  {
+    "id": "ratchet-provision",
+    "term": "Ratchet Provision",
+    "category": "Web3",
+    "definition": "Ratchet Provision refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Ratchet Provision when scaling their business."
+  },
+  {
+    "id": "sunset-clause",
+    "term": "Sunset Clause",
+    "category": "Web3",
+    "definition": "Sunset Clause refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Sunset Clause when scaling their business."
+  },
+  {
+    "id": "right-of-first-refusal-rofr",
+    "term": "Right of First Refusal (ROFR)",
+    "category": "Web3",
+    "definition": "Right of First Refusal (ROFR) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Right of First Refusal (ROFR) when scaling their business."
+  },
+  {
+    "id": "co-sale-right",
+    "term": "Co-sale Right",
+    "category": "Web3",
+    "definition": "Co-sale Right refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Co-sale Right when scaling their business."
+  },
+  {
+    "id": "no-shop-clause",
+    "term": "No-shop Clause",
+    "category": "Web3",
+    "definition": "No-shop Clause refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on No-shop Clause when scaling their business."
+  },
+  {
+    "id": "information-rights",
+    "term": "Information Rights",
+    "category": "Web3",
+    "definition": "Information Rights refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Information Rights when scaling their business."
+  },
+  {
+    "id": "observer-rights",
+    "term": "Observer Rights",
+    "category": "Web3",
+    "definition": "Observer Rights refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Observer Rights when scaling their business."
+  },
+  {
+    "id": "board-seat",
+    "term": "Board Seat",
+    "category": "Web3",
+    "definition": "Board Seat refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Board Seat when scaling their business."
+  },
+  {
+    "id": "letter-of-intent-loi",
+    "term": "Letter of Intent (LOI)",
+    "category": "Web3",
+    "definition": "Letter of Intent (LOI) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Letter of Intent (LOI) when scaling their business."
+  },
+  {
+    "id": "memorandum-of-understanding-mou",
+    "term": "Memorandum of Understanding (MOU)",
+    "category": "Web3",
+    "definition": "Memorandum of Understanding (MOU) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Memorandum of Understanding (MOU) when scaling their business."
+  },
+  {
+    "id": "non-compete-agreement",
+    "term": "Non-Compete Agreement",
+    "category": "Web3",
+    "definition": "Non-Compete Agreement refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Non-Compete Agreement when scaling their business."
+  },
+  {
+    "id": "non-solicitation-agreement",
+    "term": "Non-Solicitation Agreement",
+    "category": "Web3",
+    "definition": "Non-Solicitation Agreement refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Non-Solicitation Agreement when scaling their business."
+  },
+  {
+    "id": "vesting-cliff",
+    "term": "Vesting Cliff",
+    "category": "Web3",
+    "definition": "Vesting Cliff refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Vesting Cliff when scaling their business."
+  },
+  {
+    "id": "acceleration",
+    "term": "Acceleration",
+    "category": "Web3",
+    "definition": "Acceleration refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Acceleration when scaling their business."
+  },
+  {
+    "id": "single-trigger",
+    "term": "Single Trigger",
+    "category": "Web3",
+    "definition": "Single Trigger refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Single Trigger when scaling their business."
+  },
+  {
+    "id": "double-trigger",
+    "term": "Double Trigger",
+    "category": "Web3",
+    "definition": "Double Trigger refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Double Trigger when scaling their business."
+  },
+  {
+    "id": "founder-vesting",
+    "term": "Founder Vesting",
+    "category": "Web3",
+    "definition": "Founder Vesting refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Founder Vesting when scaling their business."
+  },
+  {
+    "id": "option-pool-shuffle",
+    "term": "Option Pool Shuffle",
+    "category": "Web3",
+    "definition": "Option Pool Shuffle refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Option Pool Shuffle when scaling their business."
+  },
+  {
+    "id": "capital-call",
+    "term": "Capital Call",
+    "category": "Web3",
+    "definition": "Capital Call refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Capital Call when scaling their business."
+  },
+  {
+    "id": "dry-powder",
+    "term": "Dry Powder",
+    "category": "Web3",
+    "definition": "Dry Powder refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Dry Powder when scaling their business."
+  },
+  {
+    "id": "irr-internal-rate-of-return",
+    "term": "IRR (Internal Rate of Return)",
+    "category": "Web3",
+    "definition": "IRR (Internal Rate of Return) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on IRR (Internal Rate of Return) when scaling their business."
+  },
+  {
+    "id": "moic-multiple-on-invested-capital",
+    "term": "MOIC (Multiple on Invested Capital)",
+    "category": "Web3",
+    "definition": "MOIC (Multiple on Invested Capital) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on MOIC (Multiple on Invested Capital) when scaling their business."
+  },
+  {
+    "id": "dpi-distributions-to-paid-in-capital",
+    "term": "DPI (Distributions to Paid-In Capital)",
+    "category": "Web3",
+    "definition": "DPI (Distributions to Paid-In Capital) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on DPI (Distributions to Paid-In Capital) when scaling their business."
+  },
+  {
+    "id": "rvpi-residual-value-to-paid-in-capital",
+    "term": "RVPI (Residual Value to Paid-In Capital)",
+    "category": "Web3",
+    "definition": "RVPI (Residual Value to Paid-In Capital) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on RVPI (Residual Value to Paid-In Capital) when scaling their business."
+  },
+  {
+    "id": "tvpi-total-value-to-paid-in-capital",
+    "term": "TVPI (Total Value to Paid-In Capital)",
+    "category": "Web3",
+    "definition": "TVPI (Total Value to Paid-In Capital) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on TVPI (Total Value to Paid-In Capital) when scaling their business."
+  },
+  {
+    "id": "hurdle-rate",
+    "term": "Hurdle Rate",
+    "category": "Web3",
+    "definition": "Hurdle Rate refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Hurdle Rate when scaling their business."
+  },
+  {
+    "id": "fund-of-funds",
+    "term": "Fund of Funds",
+    "category": "Web3",
+    "definition": "Fund of Funds refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Fund of Funds when scaling their business."
+  },
+  {
+    "id": "family-office",
+    "term": "Family Office",
+    "category": "Web3",
+    "definition": "Family Office refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Family Office when scaling their business."
+  },
+  {
+    "id": "corporate-venture-capital-cvc",
+    "term": "Corporate Venture Capital (CVC)",
+    "category": "Web3",
+    "definition": "Corporate Venture Capital (CVC) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Corporate Venture Capital (CVC) when scaling their business."
+  },
+  {
+    "id": "sovereign-wealth-fund",
+    "term": "Sovereign Wealth Fund",
+    "category": "Web3",
+    "definition": "Sovereign Wealth Fund refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Sovereign Wealth Fund when scaling their business."
+  },
+  {
+    "id": "impact-investing",
+    "term": "Impact Investing",
+    "category": "Web3",
+    "definition": "Impact Investing refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Impact Investing when scaling their business."
+  },
+  {
+    "id": "esg-environmental-social-and-governance",
+    "term": "ESG (Environmental, Social, and Governance)",
+    "category": "Web3",
+    "definition": "ESG (Environmental, Social, and Governance) refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on ESG (Environmental, Social, and Governance) when scaling their business."
+  },
+  {
+    "id": "b-corp",
+    "term": "B Corp",
+    "category": "Web3",
+    "definition": "B Corp refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on B Corp when scaling their business."
+  },
+  {
+    "id": "carbon-credit",
+    "term": "Carbon Credit",
+    "category": "Web3",
+    "definition": "Carbon Credit refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Carbon Credit when scaling their business."
+  },
+  {
+    "id": "circular-economy",
+    "term": "Circular Economy",
+    "category": "Web3",
+    "definition": "Circular Economy refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Circular Economy when scaling their business."
+  },
+  {
+    "id": "greenwashing",
+    "term": "Greenwashing",
+    "category": "Web3",
+    "definition": "Greenwashing refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Greenwashing when scaling their business."
+  },
+  {
+    "id": "social-enterprise",
+    "term": "Social Enterprise",
+    "category": "Web3",
+    "definition": "Social Enterprise refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Social Enterprise when scaling their business."
+  },
+  {
+    "id": "microfinance",
+    "term": "Microfinance",
+    "category": "Web3",
+    "definition": "Microfinance refers to one of the key concepts in modern startup ecosystems. Definition to be expanded.",
+    "example": "Founders heavily rely on Microfinance when scaling their business."
   }
 ];

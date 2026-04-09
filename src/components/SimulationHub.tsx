@@ -112,14 +112,14 @@ export function SimulationHub({ setActiveTab, onSprint }: { setActiveTab: (tab: 
       const conversationContext = updatedHistory.map(m => `${m.role.toUpperCase()}: ${m.text}`).join('\n');
 
       const basePrompt = `
-        You are a Social Entrepreneurship Lab AI. 
+        You are an elite, highly analytical Social Entrepreneurship Lab AI evaluating a new startup pitch. 
         Idea Context: ${localDraft}
         Conversation so far: ${conversationContext}
         Language: ${state.gameLanguage || 'English'}.
 
         ${forceGenerate 
-          ? 'TASK: Generate the final simulation scenario object. Format as: {"type": "scenario", "scenario": {"title": "Brand Name", "category": "Sector", "description": "Compelling hook", "image": "Keyword"}}' 
-          : 'TASK: Ask ONE critical question to refine the strategy. Provide 3 clear options. Format as: {"type": "question", "text": "Question?", "options": ["A", "B", "C"]}'
+          ? 'TASK: Generate the final simulation scenario object based on these specifics. Format as: {"type": "scenario", "scenario": {"title": "Brand Name", "category": "Sector", "description": "Compelling hook", "image": "Keyword"}}' 
+          : 'TASK: Probe the founder. Ask ONE highly specified, strategic question directly connected to their idea to expose risks, evaluate unit economics, or clarify their competitive moat. Provide 3 distinct, challenging options that heavily dictate their strategy. Format as: {"type": "question", "text": "Question?", "options": ["A", "B", "C"]}'
         }
         OUTPUT MUST BE STRICT JSON ONLY.
       `;

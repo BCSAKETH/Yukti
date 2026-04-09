@@ -224,6 +224,55 @@ DeFi (Decentralized Finance)
 Gas Fee
 Smart Contract
 Tokenomics
+
+Advanced Scaling & Legal
+Decacorn
+Hectocorn
+Growth Equity
+Mezzanine Financing
+Venture Debt
+Convertible Debt
+ESOP Pool
+Clawback
+Pay to Play
+Ratchet Provision
+Sunset Clause
+Right of First Refusal (ROFR)
+Co-sale Right
+No-shop Clause
+Information Rights
+Observer Rights
+Board Seat
+Letter of Intent (LOI)
+Memorandum of Understanding (MOU)
+Non-Compete Agreement
+Non-Solicitation Agreement
+Vesting Cliff
+Acceleration
+Single Trigger
+Double Trigger
+Founder Vesting
+Option Pool Shuffle
+Capital Call
+Dry Powder
+IRR (Internal Rate of Return)
+MOIC (Multiple on Invested Capital)
+DPI (Distributions to Paid-In Capital)
+RVPI (Residual Value to Paid-In Capital)
+TVPI (Total Value to Paid-In Capital)
+Hurdle Rate
+Fund of Funds
+Family Office
+Corporate Venture Capital (CVC)
+Sovereign Wealth Fund
+Impact Investing
+ESG (Environmental, Social, and Governance)
+B Corp
+Carbon Credit
+Circular Economy
+Greenwashing
+Social Enterprise
+Microfinance
 `;
 
 const lines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);

@@ -152,8 +152,19 @@ export function TopBar({ activeTab, setActiveTab }: { activeTab: string; setActi
     emailNotifs: true,
     pushNotifs: true,
     autoSave: true,
+    darkMode: localStorage.getItem('theme') === 'dark',
     aiModel: 'gemini-2.0-flash',
   });
+
+  useEffect(() => {
+    if (settingsState.darkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [settingsState.darkMode]);
 
   useEffect(() => {
     if (!user) return;
@@ -401,7 +412,7 @@ export function TopBar({ activeTab, setActiveTab }: { activeTab: string; setActi
 
                  <div className="space-y-3">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{t('settings')}</p>
-                    {[{ key: 'emailNotifs' as const, label: 'Email Alerts' }, { key: 'autoSave' as const, label: 'Mission Auto-Save' }].map((toggle) => (
+                    {[{ key: 'darkMode' as const, label: 'Night Owl Mode' }, { key: 'emailNotifs' as const, label: 'Email Alerts' }, { key: 'autoSave' as const, label: 'Mission Auto-Save' }].map((toggle) => (
                       <div key={toggle.key} className="flex items-center justify-between py-2 group">
                         <span className="text-xs text-slate-600 font-bold group-hover:text-slate-950 transition-colors uppercase tracking-tight">{toggle.label}</span>
                         <button
