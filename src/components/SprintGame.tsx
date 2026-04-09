@@ -108,8 +108,10 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
     setTimeout(() => {
       setIsShaking(false);
       setShakeIntensity('none');
-    }, intensity === 'mega' ? 800 : 400);
+    }, intensity === 'mega' ? 600 : 300);
   };
+
+  const isGodMode = combo >= 2;
 
   const generateSprintTurn = async (currentStep: number) => {
     setLoading(true);
@@ -196,9 +198,11 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
     setHistory([...history, turnData]);
 
     if (impact > 30) {
+      setCombo(prev => prev + 1);
       triggerShake('mega');
       triggerPopup('MEGA HIT!');
-    } else if (impact > 15) {
+      setTimeout(() => triggerPopup('GODLIKE!'), 200);
+    } else if (impact >= 15) {
       setCombo(prev => prev + 1);
       triggerPopup(POPUP_TEXTS[Math.floor(Math.random() * POPUP_TEXTS.length)]);
       triggerShake('minor');
@@ -422,20 +426,43 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
   // --- RENDERING PLAY ---
   const hero = HEROES[selectedHero];
   return (
-    <div className={cn(
-      "max-w-5xl mx-auto pt-6 flex flex-col gap-6 items-center pb-20 transition-all duration-100", 
-      isShaking && shakeIntensity === 'mega' ? "animate-shake origin-center scale-[1.02]" : isShaking ? "animate-shake-minor" : ""
-    )}>
+    <motion.div 
+      initial={false}
+      animate={{ 
+        x: isShaking && shakeIntensity === 'mega' ? [-15, 15, -15, 15, -10, 10, -5, 5, 0] : isShaking ? [-5, 5, -3, 3, 0] : 0,
+        y: isShaking && shakeIntensity === 'mega' ? [-10, 10, -10, 10, -5, 5, 0] : isShaking ? [-2, 2, 0] : 0
+      }}
+      transition={{ duration: isShaking && shakeIntensity === 'mega' ? 0.5 : 0.3 }}
+      className={cn(
+        "max-w-5xl mx-auto pt-6 flex flex-col gap-6 items-center pb-20 transition-all duration-300 relative",
+        isGodMode ? "drop-shadow-[0_0_40px_rgba(239,68,68,0.5)]" : ""
+      )}
+    >
+      <AnimatePresence>
+        {isGodMode && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.15 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-red-600 pointer-events-none z-[-1]"
+          />
+        )}
+      </AnimatePresence>
+
       {/* Journey Map Header */}
-      <div className="w-full max-w-2xl">
+      <div className="w-full max-w-2xl relative z-10">
          {renderJourneyMap()}
       </div>
 
       <div className="w-full grid grid-cols-12 gap-8 items-start">
-        <div className="col-span-8 flex flex-col gap-6">
+        <div className="col-span-8 flex flex-col gap-6 z-10">
           <div className={cn(
-            "bg-white border-8 border-slate-900 rounded-[3rem] shadow-[20px_20px_0px_0px_rgba(15,23,42,1)] overflow-hidden flex flex-col relative min-h-[500px] transition-colors duration-300",
-            isCrisis ? "bg-red-50 border-red-500" : ""
+            "border-8 rounded-[3rem] overflow-hidden flex flex-col relative min-h-[500px] transition-all duration-500",
+            isGodMode 
+              ? "bg-slate-900 border-red-600 shadow-[20px_20px_0px_0px_rgba(220,38,38,1)] text-white" 
+              : isCrisis 
+                ? "bg-red-50 border-red-500 shadow-[20px_20px_0px_0px_rgba(15,23,42,1)]" 
+                : "bg-white border-slate-900 shadow-[20px_20px_0px_0px_rgba(15,23,42,1)]"
           )}>
             <div className="h-60 bg-slate-900 relative overflow-hidden flex items-center justify-center">
                {loading ? (
@@ -446,20 +473,33 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
                ) : (
                   <img src={`https://picsum.photos/seed/${challenge?.visual_keyword || 'impact'}/800/400`} className="w-full h-full object-cover opacity-70" />
                )}
-               {isCrisis && (
+               {/* UI Overlays */}
+               {isCrisis && !isGodMode && (
                  <div className="absolute inset-0 bg-red-600/20 animate-pulse border-8 border-red-600 flex items-center justify-center">
                     <div className="bg-red-600 text-white px-8 py-2 font-black uppercase italic text-2xl animate-bounce">CRISIS DETECTED!</div>
                  </div>
                )}
-               <div className="absolute top-6 left-6 bg-white border-2 border-slate-900 px-4 py-1 rounded-xl text-[10px] font-black uppercase shadow-[4px_4px_0px_0px_black] -rotate-2">
-                  ROUND {step} / {maxSteps}
+               {isGodMode && (
+                 <div className="absolute inset-0 bg-red-600/30 flex items-center justify-center mix-blend-overlay">
+                    <Flame size={120} className="text-red-500 animate-pulse opacity-50" />
+                 </div>
+               )}
+               
+               <div className={cn(
+                 "absolute top-6 left-6 border-2 px-4 py-1 rounded-xl text-[10px] font-black uppercase shadow-[4px_4px_0px_0px_black] -rotate-2",
+                 isGodMode ? "bg-red-600 border-white text-white" : "bg-white border-slate-900"
+               )}>
+                  ROUND {step} / {maxSteps} {isGodMode && "🔥"}
                </div>
             </div>
 
             <div className="p-8 flex-1 flex flex-col justify-between">
               <AnimatePresence mode="wait">
                   <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-6">
-                    <h3 className="text-2xl font-black leading-tight text-slate-800 border-l-8 border-primary pl-4 italic">
+                    <h3 className={cn(
+                      "text-2xl font-black leading-tight border-l-8 pl-4 italic",
+                      isGodMode ? "text-white border-red-500" : "text-slate-800 border-primary"
+                    )}>
                       {loading ? "Generating..." : (typeof challenge?.scene === 'string' ? challenge.scene : JSON.stringify(challenge?.scene))}
                     </h3>
                     <div className="grid gap-3">
@@ -469,8 +509,11 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
                            disabled={feedback !== null || loading}
                            onClick={() => handleAction(opt)}
                            className={cn(
-                             "p-5 bg-slate-50 border-4 border-slate-900 rounded-2xl text-left font-black group hover:bg-primary/5 hover:border-primary transition-all shadow-[6px_6px_0px_0px_black] active:translate-y-1 relative overflow-hidden",
-                             isCrisis ? "hover:bg-red-50 hover:border-red-600" : ""
+                             "p-5 border-4 rounded-2xl text-left font-black group transition-all shadow-[6px_6px_0px_0px_black] active:translate-y-1 relative overflow-hidden",
+                             isGodMode 
+                               ? "bg-slate-800 border-red-600 text-white hover:bg-slate-700 hover:border-red-400" 
+                               : "bg-slate-50 border-slate-900 hover:bg-primary/5 hover:border-primary",
+                             isCrisis && !isGodMode ? "hover:bg-red-50 hover:border-red-600" : ""
                            )}
                          >
                            <div className="flex items-center justify-between relative z-10">
@@ -489,9 +532,21 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
           </div>
         </div>
 
-        <div className="col-span-4 space-y-8">
-          <div className="bg-white border-8 border-slate-900 rounded-[3rem] p-8 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)] relative flex flex-col items-center">
-             <div className="h-48 w-full flex items-center justify-center p-4">
+        <div className="col-span-4 space-y-8 z-10">
+          <div className={cn(
+            "border-8 rounded-[3rem] p-8 relative flex flex-col items-center transition-colors duration-500",
+            isGodMode 
+              ? "bg-slate-900 border-red-600 shadow-[12px_12px_0px_0px_rgba(220,38,38,1)]" 
+              : "bg-white border-slate-900 shadow-[12px_12px_0px_0px_rgba(15,23,42,1)]"
+          )}>
+             <div className="h-48 w-full flex items-center justify-center p-4 relative">
+                {isGodMode && (
+                   <motion.div 
+                     animate={{ rotate: 360 }} 
+                     transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+                     className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent,rgba(239,68,68,0.3),transparent)] rounded-full blur-xl"
+                   />
+                )}
                 <motion.img 
                   animate={{ 
                     y: feedback ? [-10, 0] : [0, -10, 0],
@@ -499,7 +554,7 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
                   }}
                   transition={{ repeat: !feedback ? Infinity : 0, duration: 2 }}
                   src={hero.image} 
-                  className="h-full object-contain drop-shadow-xl" 
+                  className={cn("h-full object-contain relative z-10", isGodMode ? "drop-shadow-[0_0_20px_rgba(239,68,68,0.8)]" : "drop-shadow-xl")} 
                 />
              </div>
 
@@ -516,11 +571,20 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
 
              <AnimatePresence>
                {feedback && (
-                  <motion.div 
-                    initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0, opacity: 0 }}
-                    className="absolute -top-10 -left-6 bg-white border-4 border-slate-900 p-6 rounded-2xl shadow-[8px_8px_0px_0px_black] z-20 w-64 text-center"
-                  >
-                     <p className="text-lg font-black text-primary uppercase italic tracking-tighter leading-tight italic">
+                   <motion.div 
+                     initial={{ scale: 0, opacity: 0, rotate: -5 }} 
+                     animate={{ scale: 1.1, opacity: 1, rotate: 2 }} 
+                     exit={{ scale: 0, opacity: 0, y: -20 }}
+                     transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                     className={cn(
+                       "absolute -top-10 -left-6 border-4 p-6 rounded-2xl shadow-[8px_8px_0px_0px_black] z-20 w-64 text-center",
+                       isGodMode ? "bg-red-600 border-white text-white" : "bg-white border-slate-900"
+                     )}
+                   >
+                      <p className={cn(
+                        "text-xl font-black uppercase tracking-tighter leading-tight italic",
+                        isGodMode ? "text-white" : "text-primary"
+                      )}>
                        {reactionEmoji} {typeof feedback === 'string' ? feedback : JSON.stringify(feedback)}
                      </p>
                   </motion.div>
@@ -556,16 +620,25 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
         {popups.map(p => (
            <motion.div
              key={p.id}
-             initial={{ opacity: 0, y: 0, scale: 0.5 }}
-             animate={{ opacity: 1, y: -100, scale: 1.5 }}
-             exit={{ opacity: 0 }}
-             className="fixed z-50 pointer-events-none font-black text-4xl italic text-primary uppercase stroke-black stroke-2"
-             style={{ left: `${p.x}%`, top: `${p.y}%`, textShadow: '4px 4px 0px black' }}
+             initial={{ opacity: 0, y: 0, scale: 0.2, rotate: -15 }}
+             animate={{ opacity: 1, y: -120, scale: 1.5, rotate: Math.random() * 20 - 10 }}
+             exit={{ opacity: 0, scale: 2 }}
+             transition={{ type: "spring", stiffness: 300, damping: 12 }}
+             className={cn(
+               "fixed z-50 pointer-events-none font-black text-6xl italic uppercase stroke-black stroke-2",
+               isGodMode ? "text-red-500 drop-shadow-[0_0_20px_rgba(239,68,68,1)]" : "text-primary drop-shadow-xl"
+             )}
+             style={{ 
+               left: `${p.x}%`, 
+               top: `${p.y}%`, 
+               textShadow: isGodMode ? '6px 6px 0px #000, -2px -2px 0px #fff' : '4px 4px 0px black' 
+             }}
            >
              {p.text}
+             {isGodMode && <Flame className="inline ml-2 text-orange-400 animate-pulse" size={48} />}
            </motion.div>
         ))}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

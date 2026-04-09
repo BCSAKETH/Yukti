@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Info, Briefcase, TrendingUp, Zap, Target, BookOpen, Play } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useSimulation } from '../context/SimulationContext';
+import { EXTENDED_DICTIONARY_TERMS } from '../data/startupTerms';
 
 interface Term {
   id: string;
   term: string;
-  category: 'Financial' | 'Strategy' | 'Operational' | 'Growth';
+  category: 'Financial' | 'Strategy' | 'Operational' | 'Growth' | 'Web3' | 'Impact' | 'Technology' | 'Legal';
   definition: string;
   example: string;
   youtubeUrl?: string;
@@ -15,32 +16,80 @@ interface Term {
 
 export const DICTIONARY_DATA: Record<string, Term[]> = {
   English: [
-    { id: 'runway', term: 'Runway', category: 'Financial', definition: 'The amount of time your venture can continue to operate before it runs out of cash.', example: 'A startup with $50k and a monthly burn of $5k has a 10-month runway.', youtubeUrl: 'https://www.youtube.com/watch?v=7uGvLbeXNfA' },
-    { id: 'burn-rate', term: 'Burn Rate', category: 'Financial', definition: 'The rate at which a company spends its supply of cash over time.', example: 'Spending $10,000 more than earned each month.', youtubeUrl: 'https://www.youtube.com/watch?v=yYJ6xGv35mY' },
-    { id: 'ltv', term: 'LTV (Lifetime Value)', category: 'Growth', definition: 'The total value a beneficiary generates over their relationship with your venture.', example: 'Cumulative learning gains from a student over 5 years.', youtubeUrl: 'https://www.youtube.com/watch?v=9Lp9Vz2q_lU' },
-    { id: 'cac', term: 'CAC (Customer Acquisition Cost)', category: 'Growth', definition: 'The total cost associated with convincing a potential customer to use your service.', example: '$500 spent to get 50 farmers means $10 CAC.', youtubeUrl: 'https://www.youtube.com/watch?v=Xh07T3E7X8w' },
-    { id: 'pivot', term: 'Pivot', category: 'Strategy', definition: 'A fundamental shift in strategy when the current path is not leading to impact.', example: 'Shifting from high-cost hardware to SMS-based health advice.', youtubeUrl: 'https://www.youtube.com/watch?v=nI_T2K3_I5c' },
-    { id: 'mvc', term: 'MVC (Minimum Viable Concept)', category: 'Strategy', definition: 'The simplest version of your venture to start learning from stakeholders.', example: 'Manual composting station before an automated plant.', youtubeUrl: 'https://www.youtube.com/watch?v=1hU8a_K-eP8' },
-    { id: 'bootstrapping', term: 'Bootstrapping', category: 'Financial', definition: 'Growing a venture using personal savings rather than external investment.', example: 'Selling handicrafts to fund a community center.', youtubeUrl: 'https://www.youtube.com/watch?v=pY-m8F_rMls' },
-    { id: 'scalability', term: 'Scalability', category: 'Operational', definition: 'The ability of a system to handle a growing amount of work by adding resources.', example: 'literacy program expanding to 100 villages without doubling costs.', youtubeUrl: 'https://www.youtube.com/watch?v=9v0H9wVqVNo' },
-    { id: 'unit-economics', term: 'Unit Economics', category: 'Financial', definition: 'The direct revenues and costs associated with a single unit of your business.', example: 'Cost to produce one net vs. the subsidy received.', youtubeUrl: 'https://www.youtube.com/watch?v=f7Bf5R1zXpA' },
-    { id: 'impact-dilution', term: 'Impact Dilution', category: 'Strategy', definition: 'The risk of weakening the core mission when expanding too fast.', example: 'Vocational school adding general sports which lowers trade certification rates.', youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
-    { id: 'vc', term: 'Venture Capital (VC)', category: 'Financial', definition: 'Private equity financing provided by firms to startups with high growth potential.', example: 'Raising 2 Crores to scale sustainable battery recycling.', youtubeUrl: 'https://www.youtube.com/watch?v=Y7_lXf6P9v8' },
-    { id: 'angel', term: 'Angel Investor', category: 'Financial', definition: 'An individual who provides capital for a business start-up in exchange for equity.', example: 'Former doctor investing 50 Lakhs in a health-tech app.', youtubeUrl: 'https://www.youtube.com/watch?v=hOAs6G6fV1E' },
-    { id: 'term-sheet', term: 'Term Sheet', category: 'Financial', definition: 'A non-binding agreement setting the basic terms for an investment.', example: 'Reviewing liquidation preference and board seat requirements.', youtubeUrl: 'https://www.youtube.com/watch?v=O1mDqI96v4w' },
-    { id: 'series-a', term: 'Series A', category: 'Growth', definition: 'The first stage of venture capital financing after a successful pilot.', example: 'Funding used to optimize product and move to regional rollout.', youtubeUrl: 'https://www.youtube.com/watch?v=Xh07T3E7X8w' },
-    { id: 'pmf', term: 'PMF (Product Market Fit)', category: 'Strategy', definition: 'The degree to which a product satisfies a strong market demand.', example: 'Farmers requesting irrigation systems faster than production.', youtubeUrl: 'https://www.youtube.com/watch?v=G30kR1v-xQ0' },
-    { id: 'moat', term: 'Moat', category: 'Strategy', definition: 'A competitive advantage that makes it difficult for others to compete.', example: 'Proprietary data on rural crop patterns.', youtubeUrl: 'https://www.youtube.com/watch?v=qM-P9XG5Z6c' },
-    { id: 'exit-strategy', term: 'Exit Strategy', category: 'Strategy', definition: 'A plan for how a founder will leave their business while recouping investment.', example: 'Acquisition by a global NGO to scale water tech.', youtubeUrl: 'https://www.youtube.com/watch?v=uD9H6XayIdI' },
-    { id: 'vesting', term: 'Vesting', category: 'Operational', definition: 'The process of earning ownership of the company over time.', example: '4-year schedule to ensure founder commitment.', youtubeUrl: 'https://www.youtube.com/watch?v=_r_pA_Q1S00' },
-    { id: 'cliff', term: 'Cliff', category: 'Operational', definition: 'A period at the beginning of vesting where no equity is earned.', example: '1-year cliff means 0% equity if leaving before 12 months.', youtubeUrl: 'https://www.youtube.com/watch?v=S0T0s6X9O1Y' },
-    { id: 'tam', term: 'TAM (Total Addressable Market)', category: 'Growth', definition: 'The total revenue opportunity available if 100% market share is achieved.', example: 'Counting every off-grid household for solar energy.', youtubeUrl: 'https://www.youtube.com/watch?v=uD9H6XayIdI' }
+    // Financial & VC
+    { id: 'runway', term: 'Runway', category: 'Financial', definition: 'The amount of time your venture can continue to operate before it runs out of cash.', example: 'A startup with $50k and a monthly burn of $5k has a 10-month runway.' },
+    { id: 'burn-rate', term: 'Burn Rate', category: 'Financial', definition: 'The rate at which a company spends its supply of cash over time.', example: 'Spending $10,000 more than earned each month.' },
+    { id: 'bootstrapping', term: 'Bootstrapping', category: 'Financial', definition: 'Growing a venture using personal savings rather than external investment.', example: 'Selling handicrafts to fund a community center without taking loans.' },
+    { id: 'unit-economics', term: 'Unit Economics', category: 'Financial', definition: 'The direct revenues and costs associated with a single unit of your business.', example: 'Cost to produce one net vs. the subsidy received from government.' },
+    { id: 'vc', term: 'Venture Capital (VC)', category: 'Financial', definition: 'Private equity financing provided by firms to startups with high growth potential.', example: 'Raising $2M to scale sustainable battery recycling.' },
+    { id: 'angel', term: 'Angel Investor', category: 'Financial', definition: 'An individual who provides capital for a business start-up in exchange for equity.', example: 'Former doctor investing $50K in a health-tech app.' },
+    { id: 'term-sheet', term: 'Term Sheet', category: 'Financial', definition: 'A non-binding agreement setting the basic terms for an investment.', example: 'Reviewing liquidation preference and board seat requirements.' },
+    { id: 'arr', term: 'ARR & MRR', category: 'Financial', definition: 'Annual/Monthly Recurring Revenue. The predictable revenue expected every period.', example: '100 schools paying $10/month = $1,000 MRR.' },
+    { id: 'cap-table', term: 'Cap Table', category: 'Financial', definition: 'Capitalization Table. A spreadsheet showing who owns what equity in a company.', example: 'Founders own 80%, angel investors own 20%.' },
+    { id: 'safe', term: 'SAFE Note', category: 'Financial', definition: 'Simple Agreement for Future Equity. Allows investors to buy shares in a future round.', example: 'Raising $100k today that converts to shares during Series A.' },
+    { id: 'due-diligence', term: 'Due Diligence', category: 'Financial', definition: 'An investigation of a potential investment to confirm all material facts.', example: 'Investors reviewing legal contracts before wiring money.' },
+    { id: 'series-seed', term: 'Seed Round', category: 'Financial', definition: 'The initial capital used when starting a business.', example: 'Raising $500K to build the first working prototype.' },
+    { id: 'series-a', term: 'Series A/B/C', category: 'Financial', definition: 'Successive rounds of funding tied to reaching major scale milestones.', example: 'Raising Series A to expand from 1 city to 10 cities.' },
+    { id: 'valuation', term: 'Pre/Post-Money Valuation', category: 'Financial', definition: 'The value of a company before and immediately after receiving investment.', example: '$4M Pre-Money + $1M Investment = $5M Post-Money.' },
+    { id: 'roi', term: 'ROI', category: 'Financial', definition: 'Return on Investment. The ratio of net income to investment.', example: 'Spending $1,000 to make $1,500 yields a 50% ROI.' },
+
+    // Growth & Marketing
+    { id: 'ltv', term: 'LTV (Lifetime Value)', category: 'Growth', definition: 'The total value a beneficiary generates over their relationship with your venture.', example: 'Cumulative learning gains from a student over 5 years.' },
+    { id: 'cac', term: 'CAC (Customer Acq. Cost)', category: 'Growth', definition: 'Total cost associated with convincing a potential customer to use your service.', example: '$500 spent to get 50 farmers means $10 CAC.' },
+    { id: 'tam', term: 'TAM / SAM / SOM', category: 'Growth', definition: 'Total Addressable Market, Serviceable Available Market, and Serviceable Obtainable Market.', example: 'TAM is all global students, SOM is students in Bangalore you can reach.' },
+    { id: 'churn', term: 'Churn Rate', category: 'Growth', definition: 'The rate at which customers stop doing business with an entity.', example: 'If 5 out of 100 subscribers cancel this month, churn is 5%.' },
+    { id: 'incubator', term: 'Incubator / Accelerator', category: 'Growth', definition: 'Programs designed to help startups succeed via mentorship or funding.', example: 'Joining Y Combinator for 3 months to refine the product.' },
+    { id: 'go-to-market', term: 'Go-To-Market (GTM)', category: 'Growth', definition: 'An action plan specifying how a company will reach target customers.', example: 'Partnering with local NGOs to distribute water filters directly.' },
+    { id: 'virality', term: 'Viral Coefficient', category: 'Growth', definition: 'The number of new users an existing user generates.', example: 'K factor of 1.2 means every 10 users bring in 12 new ones.' },
+    { id: 'conversion-rate', term: 'Conversion Rate', category: 'Growth', definition: 'Percentage of users who take a desired action.', example: '10 out of 100 website visitors signing up = 10% conversion.' },
+
+    // Strategy & Core Theory
+    { id: 'pmf', term: 'PMF (Product-Market Fit)', category: 'Strategy', definition: 'The degree to which a product satisfies a strong market demand.', example: 'Farmers requesting irrigation systems faster than you can build them.' },
+    { id: 'pivot', term: 'Pivot', category: 'Strategy', definition: 'A fundamental shift in strategy when the current path is not working.', example: 'Shifting from high-cost hardware to an SMS-based advice system.' },
+    { id: 'mvc', term: 'MVP / MVC', category: 'Strategy', definition: 'Minimum Viable Product/Concept. Simplest version to start learning.', example: 'A manual community compost station before buying an automated plant.' },
+    { id: 'moat', term: 'Moat (Defensibility)', category: 'Strategy', definition: 'A competitive advantage making it difficult for others to compete.', example: 'Proprietary AI data on rural crop disease patterns.' },
+    { id: 'exit-strategy', term: 'Exit Strategy', category: 'Strategy', definition: 'A plan for how a founder will leave their business.', example: 'Acquisition by a global NGO (M&A) or an IPO.' },
+    { id: 'b2b', term: 'B2B / B2C / B2G', category: 'Strategy', definition: 'Business-to-Business, Consumer, or Government. Defines the primary customer.', example: 'Selling bulk educational tablets to the Ministry of Ed is B2G.' },
+    { id: 'pitch-deck', term: 'Pitch Deck', category: 'Strategy', definition: 'A presentation used to provide a quick overview of your business plan.', example: 'A 10-slide deck summarizing the problem, solution, and market size.' },
+    { id: 'blue-ocean', term: 'Blue Ocean Strategy', category: 'Strategy', definition: 'Creating a new, uncontested market space rather than competing in an existing one.', example: 'Cirque du Soleil reinventing the circus for adults.' },
+    { id: 'freemium', term: 'Freemium', category: 'Strategy', definition: 'Offering basic services for free while charging for advanced features.', example: 'Free basic learning app, paid tier for tutor access.' },
+
+    // Operational & Legal
+    { id: 'scalability', term: 'Scalability', category: 'Operational', definition: 'The ability of a system to handle growing amounts of work efficiently.', example: 'A software curriculum expanding to 100 villages without doubling costs.' },
+    { id: 'vesting', term: 'Vesting', category: 'Legal', definition: 'The process of earning ownership of the company over time.', example: '4-year schedule to ensure founder long-term commitment.' },
+    { id: 'cliff', term: 'Cliff', category: 'Legal', definition: 'A period at the beginning of vesting where no equity is earned.', example: '1-year cliff means 0% equity if you leave before 12 months.' },
+    { id: 'kpi', term: 'KPI / OKR', category: 'Operational', definition: 'Key Performance Indicators & Objectives and Key Results.', example: 'Objective: Expand reach. Key Result: Hit 5,000 active users by Q3.' },
+    { id: 'sweat-equity', term: 'Sweat Equity', category: 'Legal', definition: 'Non-monetary investment (time/effort) founders contribute.', example: 'Working nights and weekends for 6 months without taking a salary.' },
+    { id: 'agile', term: 'Agile Methodology', category: 'Operational', definition: 'Project management approach focused on iterative, rapid development loops.', example: 'Releasing app updates every 2 weeks based on user feedback.' },
+    { id: 'board-of-directors', term: 'Board of Directors', category: 'Legal', definition: 'A group elected to represent shareholders and oversee strategy.', example: 'Meeting quarterly with investors to approve the annual budget.' },
+    { id: 'ip', term: 'IP (Intellectual Property)', category: 'Legal', definition: 'Creations of the mind protected by law (Patents, Trademarks).', example: 'Patenting a novel water filtration membrane.' },
+
+    // Impact & ESG Frameworks
+    { id: 'sroi', term: 'SROI', category: 'Impact', definition: 'Social Return on Investment. Measuring non-financial value created.', example: 'For every $1 invested, producing $3 in measurable societal value.' },
+    { id: 'toc', term: 'Theory of Change', category: 'Impact', definition: 'A methodology mapping how short-term actions lead to long-term goals.', example: 'Mapping exactly how providing laptops leads to higher graduation rates.' },
+    { id: 'tbl', term: 'Triple Bottom Line', category: 'Impact', definition: 'Accounting framework with three parts: social, environmental, and financial.', example: 'Evaluating success by Profit, People, AND Planet.' },
+    { id: 'esg', term: 'ESG Criteria', category: 'Impact', definition: 'Environmental, Social, and Governance standards for operations.', example: 'Investors refusing to fund ventures with poor carbon offset policies.' },
+    { id: 'sdgs', term: 'SDGs', category: 'Impact', definition: 'Sustainable Development Goals set by the United Nations.', example: 'Aligning a clean water startup with UN SDG 6 (Clean Water & Sanitation).' },
+    { id: 'greenwashing', term: 'Greenwashing', category: 'Impact', definition: 'Making misleading claims about the environmental benefits of a product.', example: 'A fast-fashion brand claiming to be "100% sustainable".' },
+    { id: 'circular-economy', term: 'Circular Economy', category: 'Impact', definition: 'An economic system aimed at eliminating waste via continuous use of resources.', example: 'Collecting used plastic bottles to 3D print prosthetic limbs.' },
+    { id: 'b-corp', term: 'B-Corp Certification', category: 'Impact', definition: 'A private certification for for-profit companies measuring social/env. performance.', example: 'Patagonia is a certified B-Corp.' },
+
+    // Web3 & Advanced Tech
+    { id: 'dao', term: 'DAO', category: 'Web3', definition: 'Decentralized Autonomous Organization. Ruled by smart contracts, not bosses.', example: 'A global community voting on which climate projects to fund.' },
+    { id: 'smart-contract', term: 'Smart Contract', category: 'Web3', definition: 'Self-executing code where terms are directly written into lines of code.', example: 'Funds auto-release to farmers only when rainfall drops below 10mm.' },
+    { id: 'tokenomics', term: 'Tokenomics', category: 'Web3', definition: 'The economics and incentive structure behind a cryptocurrency/token.', example: 'Rewarding users with "Impact Coins" for every hour they volunteer.' },
+    { id: 'tvl', term: 'TVL', category: 'Web3', definition: 'Total Value Locked. The amount of funds staked or locked in a protocol.', example: 'A decentralized lending pool has a TVL of $5 Million.' },
+    { id: 'ai-hallucination', term: 'AI Hallucination', category: 'Technology', definition: 'When an AI model generates false or illogical information with high confidence.', example: 'A medical AI aggressively diagnosing a non-existent disease.' },
+    { id: 'rag', term: 'RAG (Retrival-Augmented Gen)', category: 'Technology', definition: 'AI framework that retrieves facts from an external database to ground responses.', example: 'Connecting a chatbot to Wikipedia so it answers accurately.' },
+    { id: 'blockchain', term: 'Blockchain', category: 'Web3', definition: 'A distributed, immutable digital ledger of transactions.', example: 'Ensuring transparent, un-hackable tracking of charity donations.' },
+    { id: 'api', term: 'API', category: 'Technology', definition: 'Application Programming Interface. Hooks allowing software to talk to each other.', example: 'Using Google Maps API inside your delivery routing app.' }
   ],
   Hindi: [
     { id: 'runway', term: 'रनवे (Runway)', category: 'Financial', definition: 'वह समय जब तक आपका स्टार्टअप बिना किसी नए निवेश के चल सकता है।', example: '50 हजार बैंक में और 5 हजार प्रति माह खर्च मतलब 10 महीने का रनవే।', youtubeUrl: 'https://www.youtube.com/watch?v=7uGvLbeXNfA' },
     { id: 'burn-rate', term: 'बर्न रेट (Burn Rate)', category: 'Financial', definition: 'वह दर जिस पर आपकी कंपनी समय के साथ नकदी खर्च करती है।', example: 'यदि आप हर महीने कमाई से 10,000 रुपये अधिक खर्च करते हैं।', youtubeUrl: 'https://www.youtube.com/watch?v=yYJ6xGv35mY' },
     { id: 'ltv', term: 'एलटीवी (LTV)', category: 'Growth', definition: 'एक ग्राहक द्वारा आपके व्यापार के साथ रहने के दौरान उत्पन्न कुल मूल्य।', example: '5 वर्षों में एक छात्र द्वारा प्राप्त कुल शिक्षा लाभ।', youtubeUrl: 'https://www.youtube.com/watch?v=9Lp9Vz2q_lU' },
     // Simplified for brevity, would usually do all 20
+    ...(EXTENDED_DICTIONARY_TERMS as Term[])
   ],
   Telugu: [
     { id: 'runway', term: 'రన్వే (Runway)', category: 'Financial', definition: 'మీ వెంచర్ నగదు అయిపోకముందు ఎంత కాలం పాటు పనిచేయగలదనే సమయం.', example: '50 వేల రూపాయలు ఉండి, నెలకు 5 వేల ఖర్చు ఉంటే 10 నెలల రన్వే ఉంటుంది.', youtubeUrl: 'https://www.youtube.com/watch?v=7uGvLbeXNfA' },

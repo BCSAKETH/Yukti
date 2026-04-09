@@ -44,6 +44,7 @@ import { useSimulation, ChallengeOption } from '../context/SimulationContext';
 import { AcceleratorAnalysis } from './AcceleratorAnalysis';
 import { RoadmapFlowchart } from './RoadmapFlowchart';
 import { AIMeetingRoom } from './AIMeetingRoom';
+import { AIExecutionRoadmap } from './AIExecutionRoadmap';
 import { useAuth } from '../context/AuthContext';
 import { getMentorFeedback } from '../services/geminiService';
 
@@ -261,6 +262,7 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
   const phases = [
     { id: 'discovery', label: t('discovery'), icon: Radio },
     { id: 'strategy', label: t('strategy'), icon: BarChart3 },
+    { id: 'roadmap', label: 'Roadmap', icon: FileText },
     { id: 'execution', label: t('execution'), icon: Play },
   ];
 
@@ -409,8 +411,28 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                   <AcceleratorAnalysis />
                   <div className="mt-8 flex justify-end">
                     <button 
-                      onClick={() => updateState({ currentPhase: 'execution' })}
+                      onClick={() => updateState({ currentPhase: 'roadmap' })}
                       className="bg-secondary text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-lg hover:translate-y-[-2px] transition-all"
+                    >
+                      Generate Roadmap <FileText size={18} />
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {state.currentPhase === 'roadmap' && (
+                <motion.div 
+                   key="roadmap"
+                   initial={{ opacity: 0, y: 20 }}
+                   animate={{ opacity: 1, y: 0 }}
+                   exit={{ opacity: 0, y: -20 }}
+                   className="h-full"
+                >
+                  <AIExecutionRoadmap />
+                  <div className="mt-8 flex justify-end">
+                    <button 
+                      onClick={() => updateState({ currentPhase: 'execution' })}
+                      className="bg-slate-900 text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 shadow-lg hover:translate-y-[-2px] transition-all"
                     >
                       Enter Live Execution <Zap size={18} />
                     </button>

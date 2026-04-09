@@ -88,6 +88,7 @@ interface AnalysisResult {
     pitch: string;
     keyChallenge: string;
     recommendedNextSteps: string;
+    deepDiveAnalysis?: { insight: string; action: string }[];
   };
 }
 
@@ -154,7 +155,7 @@ Strict JSON object translated into ${state.gameLanguage || 'English'} containing
   "overallReadiness": number,
   "bestAccelerator": string,
   "bestGovernmentScheme": string,
-  "summary": { "pitch", "keyChallenge", "recommendedNextSteps" }
+  "summary": { "pitch", "keyChallenge", "recommendedNextSteps", "deepDiveAnalysis": [{"insight", "action"}] }
 }
       `;
 
@@ -434,6 +435,24 @@ Strict JSON object translated into ${state.gameLanguage || 'English'} containing
                               <p className="text-sm font-bold text-slate-200 leading-relaxed">{String(result.summary?.recommendedNextSteps)}</p>
                             </div>
                           </div>
+                          
+                          {/* Richer Deep Dive Analysis added for Masterclass Output improvement */}
+                          {result.summary?.deepDiveAnalysis && result.summary.deepDiveAnalysis.length > 0 && (
+                            <div className="mt-8 pt-8 border-t border-white/10">
+                               <span className="text-fuchsia-400 font-black uppercase text-[10px] tracking-[0.3em] block mb-4">Detailed Deep-Dive Analysis</span>
+                               <div className="grid grid-cols-1 gap-4">
+                                  {result.summary.deepDiveAnalysis.map((item, idx) => (
+                                     <div key={idx} className="flex gap-4 items-start bg-slate-900/50 p-5 rounded-xl border border-white/5">
+                                        <div className="w-8 h-8 rounded-full bg-fuchsia-500/20 text-fuchsia-400 flex items-center justify-center font-black text-xs shrink-0">{idx + 1}</div>
+                                        <div>
+                                           <h5 className="text-sm font-black text-white mb-1">{String(item.insight)}</h5>
+                                           <p className="text-xs text-slate-400 font-medium leading-relaxed">{String(item.action)}</p>
+                                        </div>
+                                     </div>
+                                  ))}
+                               </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
@@ -638,6 +657,18 @@ function MarketBenchmark({ data }: { data: any }) {
     { subject: 'Economics', A: 35, B: 80 },
   ];
 
+  const suggestions: Record<string, string> = {
+    'Scalability': 'Automate service delivery to handle 10x volume without adding headcount.',
+    'Policy Fit': 'Align with local government ESG frameworks to unlock immediate grants.',
+    'Economics': 'Lower CAC through organic community marketing and introduce a tiered subscription.',
+    'Trust': 'Publish transparent impact reports and verify metrics through third-party audits.',
+    'Impact': 'Deepen your value offering to target the root cause, not just symptoms.'
+  };
+
+  const improvements = chartData
+    .filter(d => d.A < d.B - 10)
+    .sort((a,b) => (b.B - b.A) - (a.B - a.A));
+
   return (
     <div className="bg-white rounded-[2.5rem] p-10 premium-shadow border border-slate-100 h-full flex flex-col">
        <div className="flex justify-between items-center mb-8">
@@ -647,16 +678,40 @@ function MarketBenchmark({ data }: { data: any }) {
           </div>
        </div>
 
-       <div className="flex-1 min-h-[250px]">
-          <ResponsiveContainer width="100%" height="100%">
-             <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
-                <PolarGrid stroke="#f1f5f9" />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }} />
-                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                <Radar name="You" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.5} />
-                <Radar name="Peak" dataKey="B" stroke="#e2e8f0" fill="#e2e8f0" fillOpacity={0.2} />
-             </RadarChart>
-          </ResponsiveContainer>
+       <div className="flex gap-8 flex-col lg:flex-row min-h-[300px]">
+          <div className="flex-1 min-h-[250px] relative">
+             <ResponsiveContainer width="100%" height="100%">
+                <RadarChart cx="50%" cy="50%" outerRadius="80%" data={chartData}>
+                   <PolarGrid stroke="#f1f5f9" />
+                   <PolarAngleAxis dataKey="subject" tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 900 }} />
+                   <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                   <Radar name="You" dataKey="A" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.5} />
+                   <Radar name="Peak" dataKey="B" stroke="#e2e8f0" fill="#e2e8f0" fillOpacity={0.2} />
+                </RadarChart>
+             </ResponsiveContainer>
+          </div>
+          
+          <div className="w-full lg:w-[250px] flex flex-col justify-center border-t lg:border-t-0 lg:border-l border-slate-100 pt-6 lg:pt-0 lg:pl-6">
+             <p className="text-[10px] font-black tracking-[0.2em] uppercase text-slate-400 mb-4 flex items-center gap-2">
+               <Zap size={12} className="text-amber-500" /> How to Improve
+             </p>
+             <ul className="space-y-4">
+               {improvements.slice(0, 3).map((item, idx) => (
+                 <li key={idx} className="flex flex-col gap-1">
+                   <div className="flex items-center gap-2">
+                     <span className="text-xs font-black text-slate-900 uppercase tracking-widest">{item.subject}</span>
+                     <span className="text-[9px] font-bold text-rose-500 uppercase">({item.A}/{item.B})</span>
+                   </div>
+                   <span className="text-xs font-medium text-slate-500 leading-tight">
+                     {suggestions[item.subject] || 'Analyze your operations and scale up efficiency.'}
+                   </span>
+                 </li>
+               ))}
+               {improvements.length === 0 && (
+                 <li className="text-xs font-bold text-emerald-500">You are outperforming the benchmark! Keep scaling.</li>
+               )}
+             </ul>
+          </div>
        </div>
     </div>
   );

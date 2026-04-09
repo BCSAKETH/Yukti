@@ -72,31 +72,6 @@
     box-shadow: inset 0 -100px 100px -100px rgba(0, 0, 0, 0.8);
   }
 
-  .boardroom-stage {
-    background: radial-gradient(ellipse at center, rgba(20, 184, 166, 0.15) 0%, transparent 70%);
-    transform: rotateX(75deg) translateY(200px);
-    height: 600px;
-    width: 200%;
-    left: -50%;
-    bottom: -100px;
-    position: absolute;
-    filter: blur(40px);
-    pointer-events: none;
-  }
-
-  .shark-spotlight {
-    position: absolute;
-    top: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 400px;
-    background: radial-gradient(ellipse at top, var(--spotlight-color) 0%, transparent 70%);
-    opacity: 0.3;
-    pointer-events: none;
-    filter: blur(30px);
-  }
-
   .shark-card-active {
     filter: drop-shadow(0 0 20px currentColor);
   }

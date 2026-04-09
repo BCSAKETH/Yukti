@@ -42,7 +42,7 @@ function AppContent() {
     <div className="min-h-screen mesh-gradient-light selection:bg-primary/20 relative">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      <div className="ml-32 min-h-screen flex flex-col">
+      <div className="ml-64 min-h-screen flex flex-col">
         <TopBar activeTab={activeTab} setActiveTab={setActiveTab} />
         
         <main className="flex-1 mt-20 p-10 lg:p-16 max-w-7xl mx-auto w-full">
@@ -60,7 +60,8 @@ function AppContent() {
               {activeTab === 'boardroom' && <AIMeetingRoom onClose={() => setActiveTab('hub')} />}
               {activeTab === 'dictionary' && <StartupDictionary />}
               {activeTab === 'sprint' && <SprintGame 
-                idea={customSprintIdea || state.draftIdea || ''} 
+                key={`sprint-game-${customSprintIdea ? 'custom' : 'empty'}`}
+                idea={customSprintIdea || ''} 
                 language={state.gameLanguage || 'English'} 
                 onComplete={() => {
                   setCustomSprintIdea(null);

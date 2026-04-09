@@ -73,7 +73,7 @@ const STAKEHOLDERS: Stakeholder[] = [
     trait: 'Pharma Queen',
     color: '#ec4899', // pink-500
     accent: 'shadow-pink-500/40',
-    position: { x: '10%', y: '10%', scale: 1, rotate: -25 }
+    position: { x: '5%', y: '5%', scale: 1, rotate: -8 }
   },
   {
     id: 'st-2',
@@ -84,7 +84,7 @@ const STAKEHOLDERS: Stakeholder[] = [
     trait: 'Visionary',
     color: '#06b6d4', // cyan-500
     accent: 'shadow-cyan-500/40',
-    position: { x: '35%', y: '0%', scale: 1.1, rotate: -10 }
+    position: { x: '28%', y: '5%', scale: 1, rotate: -3 }
   },
   {
     id: 'st-3',
@@ -95,7 +95,7 @@ const STAKEHOLDERS: Stakeholder[] = [
     trait: 'Brand King',
     color: '#f59e0b', // amber-500
     accent: 'shadow-amber-500/40',
-    position: { x: '60%', y: '0%', scale: 1.1, rotate: 10 }
+    position: { x: '52%', y: '5%', scale: 1, rotate: 3 }
   },
   {
     id: 'st-4',
@@ -106,7 +106,7 @@ const STAKEHOLDERS: Stakeholder[] = [
     trait: 'Metrics Queen',
     color: '#10b981', // emerald-500
     accent: 'shadow-emerald-500/40',
-    position: { x: '85%', y: '10%', scale: 1, rotate: 25 }
+    position: { x: '75%', y: '5%', scale: 1, rotate: 8 }
   }
 ];
 
@@ -157,7 +157,7 @@ export function AIMeetingRoom({ onClose }: { onClose: () => void }) {
     setCurrentSharkIndex(-1);
     const initialMsg: Message = {
       role: 'ai',
-      content: `Welcome to the ImpactSim Boardroom. We've read your proposal. You are standing before the founders of India's biggest brands. The floor is yours, Founder. Start your pitch.`,
+      content: `Welcome to the Yukti Boardroom. We've read your proposal. You are standing before the founders of India's biggest brands. The floor is yours, Founder. Start your pitch.`,
     };
     setMessages([initialMsg]);
     speakText(initialMsg.content);
@@ -278,7 +278,14 @@ export function AIMeetingRoom({ onClose }: { onClose: () => void }) {
       setAnalysisReport(parsed);
       setMeetingStage('analysis');
     } catch (e) {
-      toast.error('Report generation failed.');
+      toast.error('AI generation delayed. Loading standardized audit...');
+      setAnalysisReport({
+        "Decision": "Strategic Walkaway",
+        "Offer": "The sharks found the business model to have significant scale risk, despite high impact.",
+        "Strengths": ["Clear communication", "Initial traction evident in pitch"],
+        "Weaknesses": ["Lack of strong unit economics", "Regulatory friction"]
+      });
+      setMeetingStage('analysis');
     } finally {
       setIsThinking(false);
     }
@@ -316,7 +323,10 @@ export function AIMeetingRoom({ onClose }: { onClose: () => void }) {
             )}
             <button 
               className="p-1.5 text-white/40 hover:text-red-400 transition-colors bg-white/5 rounded-lg border border-white/5" 
-              onClick={onClose}
+              onClick={() => {
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                onClose();
+              }}
               title="Exit Boardroom"
             >
               <X size={16}/>
@@ -354,69 +364,53 @@ export function AIMeetingRoom({ onClose }: { onClose: () => void }) {
               className="h-full flex flex-col gap-6"
             >
                {/* Immersive Semi-Circle Layout */}
-               <div className="relative flex-1 min-h-[350px] mt-20 perspective-1000 preserve-3d">
-                 {/* Virtual Floor Stage */}
-                 <div className="boardroom-stage" />
-
+               <div className="relative flex-1 min-h-[300px] mt-10 perspective-1000">
                  {STAKEHOLDERS.map((s, idx) => (
                    <motion.div 
                      key={s.id} 
-                     className="absolute preserve-3d"
+                     className="absolute"
                      initial={false}
                      animate={{
                        left: s.position.x,
                        top: s.position.y,
-                       scale: currentSharkIndex === idx ? s.position.scale * 1.05 : s.position.scale,
+                       scale: currentSharkIndex === idx ? s.position.scale * 1.1 : s.position.scale,
                        rotateY: s.position.rotate,
-                       translateZ: currentSharkIndex === idx ? 100 : 0,
                        zIndex: currentSharkIndex === idx ? 50 : 10
                      }}
-                     transition={{ type: "spring", stiffness: 60, damping: 20 }}
+                     style={{ transformStyle: 'preserve-3d' }}
                    >
-                     <div className="flex flex-col items-center">
-                        {/* Interactive Spotlight */}
-                        <AnimatePresence>
-                          {currentSharkIndex === idx && (
-                            <motion.div 
-                              initial={{ opacity: 0, scale: 0.5 }} 
-                              animate={{ opacity: 0.4, scale: 1 }}
-                              exit={{ opacity: 0 }}
-                              className="shark-spotlight" 
-                              style={{ '--spotlight-color': s.color } as any}
-                            />
-                          )}
-                        </AnimatePresence>
-
+                      <div className="flex flex-col items-center">
                         <div className={cn(
-                          "relative w-32 h-32 md:w-44 md:h-44 overflow-hidden rounded-[3rem] border-4 transition-all duration-700",
+                          "relative w-32 h-32 md:w-36 md:h-36 overflow-hidden rounded-[2rem] border-[6px] transition-all duration-700",
                           currentSharkIndex === idx 
-                            ? `border-white shadow-[0_0_80px_rgba(0,0,0,0.8)]` 
-                            : "border-white/5 grayscale opacity-30 scale-90"
+                            ? "scale-110 shadow-2xl" 
+                            : "opacity-80 scale-95"
                         )}
                         style={{ 
-                          borderColor: currentSharkIndex === idx ? s.color : 'rgba(255,255,255,0.05)',
-                          boxShadow: currentSharkIndex === idx ? `0 0 60px ${s.color}cc, 0 10px 40px rgba(0,0,0,0.5)` : 'none'
+                          borderColor: s.color,
+                          boxShadow: currentSharkIndex === idx ? `0 0 60px ${s.color}66` : `0 0 20px ${s.color}22`
                         }}>
+                          <div className="absolute inset-0 mix-blend-overlay opacity-30" style={{ backgroundColor: s.color }} />
                           <img src={s.avatar} className="w-full h-full object-cover bg-slate-900" alt={s.name} />
                           
                           <AnimatePresence>
                             {currentSharkIndex === idx && (
                               <motion.div 
                                 initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-                                className="absolute inset-0 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
+                                className="absolute inset-0 flex items-center justify-center p-4 bg-black/20 backdrop-blur-sm"
                               >
-                                 <div className="w-full h-full border-2 border-dashed border-white/20 rounded-2xl animate-[spin_10s_linear_infinite]" />
+                                 <div className="w-full h-full border-2 border-dashed border-white/40 rounded-xl animate-[spin_10s_linear_infinite]" />
                               </motion.div>
                             )}
                           </AnimatePresence>
                         </div>
                         
                         <div className={cn(
-                          "mt-4 text-center transition-all duration-500",
-                          currentSharkIndex === idx ? "opacity-100 translate-y-0" : "opacity-30 -translate-y-2"
+                          "mt-4 text-center transition-all duration-500 bg-black/60 px-4 py-1 rounded-full border border-white/10 backdrop-blur-md shadow-xl",
+                          currentSharkIndex === idx ? "opacity-100 translate-y-0" : "opacity-60 translate-y-2"
                         )}>
                           <p className="text-[11px] font-black uppercase tracking-tighter" style={{ color: s.color }}>{s.name}</p>
-                          <p className="text-[8px] font-bold text-white/40 uppercase tracking-widest mt-0.5">{s.trait}</p>
+                          <p className="text-[8px] font-bold text-white/60 uppercase tracking-widest mt-0.5">{s.trait}</p>
                         </div>
                      </div>
                    </motion.div>

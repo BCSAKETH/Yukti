@@ -41,7 +41,7 @@ export function SimulationHub({ setActiveTab, onSprint }: { setActiveTab: (tab: 
   
   const [localDraft, setLocalDraft] = useState('');
   
-  const { state, updateState, startNewSimulation, localSims, addLocalSimulation, t } = useSimulation();
+  const { state, updateState, startNewSimulation, localSims, addLocalSimulation, deleteSimulation, t } = useSimulation();
   const { user } = useAuth();
 
   const [chatHistory, setChatHistory] = useState<{
@@ -235,7 +235,21 @@ export function SimulationHub({ setActiveTab, onSprint }: { setActiveTab: (tab: 
                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-900 border border-white/20">{sim.category}</div>
                 </div>
                 <div className="p-10 space-y-4">
-                  <h3 className="text-2xl font-black text-slate-900 line-clamp-1">{sim.title}</h3>
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-2xl font-black text-slate-900 line-clamp-1 flex-1">{sim.title}</h3>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if(window.confirm('Delete this simulation?')) {
+                          deleteSimulation(sim.id, !userSims.some(cs => cs.id === sim.id));
+                        }
+                      }} 
+                      className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors cursor-pointer z-10 relative"
+                      title="Delete Simulation"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
                   <p className="text-sm text-slate-500 line-clamp-2 font-medium leading-relaxed">{sim.description}</p>
                   <div className="flex gap-3 border-t border-slate-100 pt-6 mt-4">
                       <button 

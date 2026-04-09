@@ -38,7 +38,7 @@ export interface SimulationState {
   budget: number;
   trust: number;
   momentum: number;
-  currentPhase: 'discovery' | 'strategy' | 'execution';
+  currentPhase: 'discovery' | 'strategy' | 'roadmap' | 'execution';
   scenarioId: string;
   scenarioName: string;
   region: string;
@@ -89,6 +89,7 @@ export interface SimulationContextType {
   addLocalSimulation: (sim: any) => void;
   resetSimulation: () => Promise<void>;
   undoDecision: () => Promise<void>;
+  deleteSimulation: (id: string, isLocal: boolean) => Promise<void>;
   t: (key: string) => string;
 }
 
@@ -273,13 +274,29 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
     await setDoc(doc(db, 'users', auth.currentUser.uid, 'simulations', 'active'), newState);
   };
 
+  const deleteSimulation = async (id: string, isLocal: boolean) => {
+    if (isLocal) {
+      const updated = localSims.filter(s => s.id !== id);
+      setLocalSims(updated);
+      localStorage.setItem('yukti_local_portfolio', JSON.stringify(updated));
+    } else {
+      if (!auth.currentUser) return;
+      try {
+        const { deleteDoc } = await import('firebase/firestore');
+        await deleteDoc(doc(db, 'simulations', id));
+      } catch (err) {
+        console.error('Failed to delete cloud simulation:', err);
+      }
+    }
+  };
+
   const t = (key: string): string => {
     const lang = state.gameLanguage || 'English';
     return TRANSLATIONS[lang]?.[key] || TRANSLATIONS['English']?.[key] || key;
   };
 
   return (
-    <SimulationContext.Provider value={{ state, localSims, updateState, startNewSimulation, addLocalSimulation, resetSimulation, undoDecision, t }}>
+    <SimulationContext.Provider value={{ state, localSims, updateState, startNewSimulation, addLocalSimulation, resetSimulation, undoDecision, deleteSimulation, t }}>
       {!loading && children}
     </SimulationContext.Provider>
   );
