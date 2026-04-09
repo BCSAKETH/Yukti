@@ -10,7 +10,7 @@ interface State {
   error: Error | null;
 }
 
-class ErrorBoundary extends (React.Component as any) {
+class ErrorBoundary extends React.Component<Props, State> {
   constructor(props: any) {
     super(props);
     this.state = {

@@ -1,84 +1,24 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // ===============================================================
-    // Assumed Data Model
-    // ===============================================================
-    //
-    // Collection: users
-    // Document ID: {userId}
-    // Fields:
-    //   - uid: string (required) - The unique ID of the user.
-    //   - displayName: string (optional) - The display name of the user.
-    //   - email: string (required) - The email of the user.
-    //   - photoURL: string (optional) - The photo URL of the user.
-    //   - role: string (required, enum: ['admin', 'user']) - The role of the user.
-    //
-    // Collection: simulations
-    // Document ID: {simId}
-    // Fields:
-    //   - id: string (required)
-    //   - title: string (required)
-    //   - status: string (optional, enum: ['Running', 'Review Required', 'Paused', 'Completed'])
-    //   - progress: number (optional)
-    //   - authorUid: string (required)
-    //   - updatedAt: timestamp (optional)
-    //
-    // ===============================================================
-
-    // ===============================================================
-    // Helper Functions
-    // ===============================================================
-    function isAuthenticated() {
-      return request.auth != null;
+    // Allow users to read and write their own simulation data
+    // For development/hackathon purposes, we use a permissive set
+    // but limit to authenticated users if you enable Firebase Auth.
+    // Currently set to allow all access to the 'simulations' and 'users' collections
+    // for easier peer testing and friend debugging.
+    
+    match /simulations/{document=**} {
+      allow read, write: if true;
     }
-
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+    
+    match /users/{document=**} {
+      allow read, write: if true;
     }
-
-    function isDocOwner() {
-      return isAuthenticated() && request.auth.uid == resource.data.authorUid;
-    }
-
-    function isAdmin() {
-      return isAuthenticated() &&
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
-          (request.auth.token.email == "sakethananya123@gmail.com" && request.auth.token.email_verified == true));
-    }
-
-    function isValidEmail(email) {
-      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
-    }
-
-    function isValidUser(data) {
-      return data.keys().hasOnly(['uid', 'displayName', 'email', 'photoURL', 'role']) &&
-             data.uid is string && data.uid.size() > 0 &&
-             data.email is string && isValidEmail(data.email) &&
-             data.role in ['admin', 'user'];
-    }
-
-    function isValidSimulation(data) {
-      // Relaxed validation for hackathon to allow 'budget', 'momentum', 'decisions', etc.
-      return data.scenarioName is string || data.title is string;
-    }
-
-    // ===============================================================
-    // Rules
-    // ===============================================================
-
-    match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow create: if isAuthenticated() && isValidUser(request.resource.data) && (isOwner(userId) && request.resource.data.role == 'user' || isAdmin());
-      allow update: if isAuthenticated() && isValidUser(request.resource.data) && (isOwner(userId) && request.resource.data.role == resource.data.role || isAdmin());
-    }
-
-    match /users/{userId}/simulations/{simId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow create: if isOwner(userId) || isAdmin();
-      allow update: if isOwner(userId) || isAdmin();
-      allow delete: if isOwner(userId) || isAdmin();
+    
+    // Default deny for everything else
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

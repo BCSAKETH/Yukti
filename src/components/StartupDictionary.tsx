@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Info, Briefcase, TrendingUp, Zap, Target, BookOpen, Play } from 'lucide-react';
+import { Search, Info, Briefcase, TrendingUp, Zap, Target, BookOpen, Play, Globe, Shield, Cpu, Heart, Landmark } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useSimulation } from '../context/SimulationContext';
 import { EXTENDED_DICTIONARY_TERMS } from '../data/startupTerms';
+import { toast } from 'sonner';
 
 interface Term {
   id: string;
@@ -101,12 +102,37 @@ export const DICTIONARY_DATA: Record<string, Term[]> = {
 export const TERMS = DICTIONARY_DATA.English;
 
 export function StartupDictionary() {
-  const { state, t } = useSimulation();
+  const { state, updateState, t } = useSimulation();
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [claimedTerms, setClaimedTerms] = useState<Set<string>>(new Set());
 
   const currentLanguage = (state.gameLanguage === 'Telugu' || state.gameLanguage === 'Hindi') ? state.gameLanguage : 'English';
   const localizedTerms = DICTIONARY_DATA[currentLanguage] || DICTIONARY_DATA.English;
+
+  const onClaimKnowledge = async (id: string) => {
+    if (claimedTerms.has(id)) {
+      toast.info("Knowledge already absorbed for this session!");
+      return;
+    }
+    const REWARD = 5;
+    await updateState({ yuktiCoins: (state.yuktiCoins || 0) + REWARD });
+    setClaimedTerms(prev => new Set(prev).add(id));
+    toast.success(`Research Grant: +${REWARD} YKC!`, {
+      icon: <Zap size={14} className="text-amber-500" />
+    });
+  };
+
+  const CATEGORY_STYLES: Record<string, string> = {
+    Financial: 'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20',
+    Strategy: 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:border-blue-500/20',
+    Operational: 'bg-indigo-50 text-indigo-600 border-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-400 dark:border-indigo-500/20',
+    Growth: 'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20',
+    Web3: 'bg-purple-50 text-purple-600 border-purple-100 dark:bg-purple-500/10 dark:text-purple-400 dark:border-purple-500/20',
+    Impact: 'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20',
+    Technology: 'bg-cyan-50 text-cyan-600 border-cyan-100 dark:bg-cyan-500/10 dark:text-cyan-400 dark:border-cyan-500/20',
+    Legal: 'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-500/10 dark:text-slate-400 dark:border-slate-500/20',
+  };
 
   const filteredTerms = localizedTerms.filter(t => {
     const matchesSearch = t.term.toLowerCase().includes(search.toLowerCase()) || 
@@ -122,12 +148,12 @@ export function StartupDictionary() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
            <div className="flex items-center gap-3 mb-3">
-              <div className="p-3 bg-teal-50 rounded-2xl border border-teal-100 shadow-sm">
-                <BookOpen size={24} className="text-teal-600" />
+              <div className="p-3 bg-teal-50 dark:bg-teal-500/10 rounded-2xl border border-teal-100 dark:border-teal-500/20 shadow-sm">
+                <BookOpen size={24} className="text-teal-600 dark:text-teal-400" />
               </div>
-              <h2 className="text-4xl font-headline font-black text-slate-900 tracking-tight">{t('dictionary')}</h2>
+              <h2 className="text-4xl font-headline font-black text-slate-900 dark:text-white tracking-tight">{t('dictionary')}</h2>
            </div>
-           <p className="text-slate-500 font-medium max-w-md text-lg italic">Master the high-stakes lexicon of strategic execution.</p>
+           <p className="text-slate-500 dark:text-slate-400 font-medium max-w-md text-lg italic">Master the high-stakes lexicon of strategic execution. Earn Yukti Coins by absorbing research.</p>
         </motion.div>
 
         <div className="flex-1 max-w-md relative group">
@@ -137,7 +163,7 @@ export function StartupDictionary() {
             placeholder={t('search_placeholder')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full h-16 bg-white border-2 border-slate-100 rounded-[2rem] pl-14 pr-6 focus:border-teal-500 outline-none font-bold text-slate-700 transition-all shadow-sm focus:shadow-xl placeholder:text-slate-300"
+            className="w-full h-16 bg-white dark:bg-white/5 border-2 border-slate-100 dark:border-white/10 rounded-[2rem] pl-14 pr-6 focus:border-teal-500 outline-none font-bold text-on-surface dark:text-white transition-all shadow-sm focus:shadow-xl placeholder:text-slate-300 dark:placeholder:text-white/20"
           />
         </div>
       </div>
@@ -147,7 +173,7 @@ export function StartupDictionary() {
           onClick={() => setSelectedCategory(null)}
           className={cn(
             "px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all",
-            !selectedCategory ? "bg-teal-900 text-white shadow-xl scale-105" : "bg-white text-slate-400 border border-slate-100 hover:bg-slate-50"
+            !selectedCategory ? "bg-teal-900 dark:bg-teal-500 text-white dark:text-slate-950 shadow-xl scale-105" : "bg-white dark:bg-white/5 text-slate-400 dark:text-white/40 border border-slate-100 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/10"
           )}
         >
           All Terms
@@ -158,7 +184,7 @@ export function StartupDictionary() {
             onClick={() => setSelectedCategory(cat)}
             className={cn(
               "px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all",
-              selectedCategory === cat ? "bg-teal-900 text-white shadow-xl scale-105" : "bg-white text-slate-400 border border-slate-100 hover:bg-slate-50"
+              selectedCategory === cat ? "bg-teal-900 dark:bg-teal-500 text-white dark:text-slate-950 shadow-xl scale-105" : "bg-white dark:bg-white/5 text-slate-400 dark:text-white/40 border border-slate-100 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/10"
             )}
           >
             {cat}
@@ -175,45 +201,63 @@ export function StartupDictionary() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white p-10 rounded-[4rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all group overflow-hidden relative"
+              className="bg-white dark:bg-slate-900 p-10 rounded-[4rem] border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all group overflow-hidden relative"
             >
-              <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] transition-opacity rotate-12 group-hover:rotate-0 transition-transform">
+              <div className={cn("absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] transition-opacity rotate-12 group-hover:rotate-0 transition-transform", 
+                CATEGORY_STYLES[term.category]?.split(' ').find(c => c.startsWith('text-')))}>
                 {term.category === 'Financial' && <TrendingUp size={120} />}
                 {term.category === 'Strategy' && <Target size={120} />}
                 {term.category === 'Operational' && <Briefcase size={120} />}
                 {term.category === 'Growth' && <Zap size={120} />}
+                {term.category === 'Web3' && <Globe size={120} />}
+                {term.category === 'Impact' && <Heart size={120} />}
+                {term.category === 'Technology' && <Cpu size={120} />}
+                {term.category === 'Legal' && <Shield size={120} />}
               </div>
 
               <div className="relative z-10">
-                <div className="inline-block px-5 py-2 rounded-full bg-slate-50 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-8 border border-slate-100 group-hover:bg-teal-50 group-hover:text-teal-600 group-hover:border-teal-100 transition-colors">
+                <div className={cn("inline-block px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.3em] mb-8 border transition-colors", CATEGORY_STYLES[term.category])}>
                   {term.category}
                 </div>
-                <h3 className="text-3xl font-headline font-black text-slate-900 mb-4 tracking-tighter leading-none group-hover:text-teal-900 transition-colors">{term.term}</h3>
-                <p className="text-[15px] text-slate-500 font-medium leading-relaxed mb-10 h-[90px] line-clamp-4">
+                <h3 className="text-3xl font-headline font-black text-slate-900 dark:text-white mb-4 tracking-tighter leading-none group-hover:text-teal-900 dark:group-hover:text-teal-400 transition-colors">{term.term}</h3>
+                <p className="text-[15px] text-slate-500 dark:text-white/60 font-medium leading-relaxed mb-10 h-[90px] line-clamp-4">
                   {term.definition}
                 </p>
                 
-                <div className="bg-slate-50 group-hover:bg-teal-50/50 rounded-[2.5rem] p-8 border border-slate-100 group-hover:border-teal-100/50 mb-8 transition-colors">
-                   <div className="flex items-center gap-3 mb-3 text-slate-400 group-hover:text-teal-600 transition-colors">
+                <div className="bg-slate-50 dark:bg-white/5 group-hover:bg-teal-50/50 dark:group-hover:bg-teal-500/10 rounded-[2.5rem] p-8 border border-slate-100 dark:border-white/10 group-hover:border-teal-100/50 dark:group-hover:border-teal-500/20 mb-8 transition-colors">
+                   <div className="flex items-center gap-3 mb-3 text-slate-400 dark:text-white/30 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                       <Info size={16} />
                       <span className="text-[10px] font-black uppercase tracking-widest italic">Mission Context</span>
                    </div>
-                   <p className="text-sm font-bold text-slate-800 leading-relaxed italic">
+                   <p className="text-sm font-bold text-slate-800 dark:text-white/80 leading-relaxed italic">
                      "{term.example}"
                    </p>
                 </div>
 
-                <a 
-                  href={term.youtubeUrl || "https://youtube.com"} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className={cn(
-                    "w-full flex items-center justify-center gap-3 py-5 rounded-3xl text-[10px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95",
-                    term.youtubeUrl ? "bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-100" : "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
-                  )}
-                >
-                  <Play size={16} fill="currentColor" /> {term.youtubeUrl ? "Watch & Learn" : "Coming Soon"}
-                </a>
+                <div className="flex gap-2">
+                  <a 
+                    href={term.youtubeUrl || "https://youtube.com"} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-3 py-5 rounded-3xl text-[9px] font-black uppercase tracking-[0.2em] transition-all shadow-lg active:scale-95",
+                      term.youtubeUrl ? "bg-red-50 text-red-600 hover:bg-red-600 hover:text-white border border-red-100" : "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
+                    )}
+                  >
+                    <Play size={14} fill="currentColor" /> {term.youtubeUrl ? "Video" : "Soon"}
+                  </a>
+                  <button 
+                    onClick={() => {
+                      const { updateState, state } = useSimulation(); // This might need careful ref inside map
+                      // However, we are outside useSimulation hook here, we should pull it into the main component
+                      // I will fix the component definition below to provide the reward callback
+                      onClaimKnowledge(term.id);
+                    }}
+                    className="flex-1 py-5 bg-teal-500 text-slate-950 rounded-3xl text-[9px] font-black uppercase tracking-widest shadow-lg hover:bg-teal-400 transition-all flex items-center justify-center gap-2"
+                  >
+                    <Zap size={14} /> +5 YKC
+                  </button>
+                </div>
               </div>
             </motion.div>
           ))}

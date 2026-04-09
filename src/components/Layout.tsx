@@ -62,6 +62,7 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
     { id: 'workspace', label: t('workspace'), icon: Wrench },
     { id: 'boardroom', label: t('boardroom'), icon: Users },
     { id: 'dictionary', label: t('dictionary'), icon: BookOpen },
+    { id: 'ecosystem', label: 'Ecosystem', icon: Globe },
   ];
 
   const handleLogout = async () => {
@@ -73,15 +74,15 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   };
 
   return (
-    <aside className="h-screen w-64 fixed left-0 top-0 bg-slate-100 flex flex-col py-10 px-6 z-50 border-r border-slate-200">
+    <aside className="h-screen w-64 fixed left-0 top-0 bg-slate-100 dark:bg-slate-950 flex flex-col py-10 px-6 z-50 border-r border-slate-200 dark:border-slate-800 transition-colors duration-300">
       <div className="mb-12">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
             <Zap size={24} fill="currentColor" />
           </div>
-          <span className="font-headline font-black text-indigo-950 text-2xl tracking-tighter">Yukti</span>
+          <span className="font-headline font-black text-indigo-950 dark:text-indigo-100 text-2xl tracking-tighter">Yukti</span>
         </div>
-        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-1">Master the Art of Execution</p>
+        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">Master the Art of Execution</p>
       </div>
 
       <nav className="flex-1 space-y-2">
@@ -92,8 +93,8 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
             className={cn(
               "w-full flex items-center gap-4 py-3 px-4 rounded-xl transition-all duration-300 font-headline relative group",
               activeTab === item.id 
-                ? "text-teal-900 font-bold bg-white shadow-sm border border-slate-200" 
-                : "text-slate-500 hover:text-teal-800 hover:bg-white/50"
+                ? "text-teal-900 dark:text-teal-300 font-bold bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700" 
+                : "text-slate-500 dark:text-slate-400 hover:text-teal-800 dark:hover:text-teal-200 hover:bg-white/50 dark:hover:bg-slate-800/50"
             )}
           >
             {activeTab === item.id && (
@@ -145,6 +146,8 @@ export function TopBar({ activeTab, setActiveTab }: { activeTab: string; setActi
   const notifRef = useRef<HTMLDivElement>(null);
   const settingsRef = useRef<HTMLDivElement>(null);
   const { state, updateState, startNewSimulation, t } = useSimulation();
+  
+  if (!state) return null; // Guard against uninitialized state
 
   const notifications = state.notifications || [];
 
@@ -225,7 +228,7 @@ export function TopBar({ activeTab, setActiveTab }: { activeTab: string; setActi
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-slate-50/80 backdrop-blur-md h-20 px-10 flex justify-between items-center border-b border-slate-200">
+    <header className="fixed top-0 right-0 w-[calc(100%-16rem)] z-40 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-md h-20 px-10 flex justify-between items-center border-b border-slate-200 dark:border-slate-800 transition-colors duration-300">
       <div className="flex items-center gap-6 flex-1">
         {/* Top Search Engine */}
         <div className="relative" ref={searchRef}>
@@ -446,14 +449,14 @@ export function TopBar({ activeTab, setActiveTab }: { activeTab: string; setActi
           </div>
           <div className="flex flex-col">
             <span className="text-[8px] font-black uppercase tracking-[0.2em] text-indigo-500">Yukti Coin</span>
-            <span className="text-sm font-black tracking-tighter leading-none">{((state.impactScore || 4250) * 0.1).toFixed(1)} <span className="text-xs text-indigo-400">YKC</span></span>
+            <span className="text-sm font-black tracking-tighter leading-none">{(state.yuktiCoins || 0).toLocaleString()} <span className="text-xs text-indigo-400">YKC</span></span>
           </div>
         </div>
 
         <div className="flex items-center gap-4 bg-teal-900 text-white px-5 py-2 rounded-2xl shadow-lg shadow-teal-900/20">
           <div className="flex flex-col">
             <span className="text-[7px] font-black uppercase tracking-[0.2em] text-teal-400">Impact Score</span>
-            <span className="text-sm font-black tracking-tighter leading-none">{(state.impactScore ?? 4250).toLocaleString()}</span>
+            <span className="text-sm font-black tracking-tighter leading-none">{(state?.impactScore ?? 4250).toLocaleString()}</span>
           </div>
           <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 font-headline font-black text-xs text-teal-300">{initials}</div>
         </div>

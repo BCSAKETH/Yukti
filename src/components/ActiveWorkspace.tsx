@@ -54,6 +54,17 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
   const [isGenerating, setIsGenerating] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [overrides, setOverrides] = useState<Record<number, { budget: number, impact: number }>>({});
+
+  useEffect(() => {
+    if (state.currentChallenge) {
+      const initial: Record<number, { budget: number, impact: number }> = {};
+      state.currentChallenge.options.forEach((opt: any, i: number) => {
+        initial[i] = { budget: Math.abs(opt.effect_budget), impact: opt.effect_impact };
+      });
+      setOverrides(initial);
+    }
+  }, [state.currentChallenge]);
 
   const totalMilestones = 3;
   const turnsPerMilestone = 4;
@@ -80,6 +91,7 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
       if (!apiKey) throw new Error('API Key missing');
 
       const isBankrupt = state.budget <= 0;
+      const isMoatChallenge = (state.turnCount || 0) % 4 === 2; // Inject Moat Evaluator on the 3rd turn of a milestone
       
       const prompt = `
         You are the game master for a social entrepreneurship simulation. Provide the ENTIRE JSON response strictly.
@@ -89,6 +101,7 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
         Current Status - Trust: ${state.trust}%, Impact: ${state.socialImpact}%, Budget: $${(state.budget ?? 0).toLocaleString()}, Momentum: ${state.momentum}%
         
         ${isBankrupt ? 'CRITICAL: Out of funds! Focus on emergency measures.' : ''}
+        ${isMoatChallenge ? 'CRITICAL (MOAT EVALUATOR): This turn MUST be a Defensibility/Moat challenge. A big tech giant or an AI model (like ChatGPT, Google, or local equivalent) just launched a feature that solves this exact problem for free. Challenge the user to defend their startup idea. Options must reflect finding a scalable physical moat, pivoting, or utilizing proprietary offline community trust.' : ''}
         ${previousChoiceText ? `The user last decided: "${previousChoiceText}". Respond specifically to this.` : 'This is the start.'}
         
         Generate a deeply analytical, multi-layered scenario JSON:
@@ -155,9 +168,13 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
 
   const [isShaking, setIsShaking] = useState(false);
 
-  const handleDecision = async (option: ChallengeOption) => {
+  const handleDecision = async (option: ChallengeOption, index: number) => {
     if (!state.currentChallenge) return;
     
+    // Apply user overrides
+    const finalBudgetEffect = -(overrides[index]?.budget ?? Math.abs(option.effect_budget));
+    const finalImpactEffect = overrides[index]?.impact ?? option.effect_impact;
+
     const newTurnCount = (state.turnCount || 0) + 1;
     const momentumEffect = (option as any).effect_momentum || 0;
 
@@ -178,25 +195,28 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
       });
     }
 
+    const ykcReward = Math.max(0, (option.effect_impact * 5) + (adjustedTrustEffect * 2) + (momentumEffect * 10));
+
     const newState = {
-      budget: Math.max(0, state.budget + option.effect_budget),
-      socialImpact: Math.min(100, Math.max(0, state.socialImpact + option.effect_impact)),
+      budget: Math.max(0, state.budget + finalBudgetEffect),
+      socialImpact: Math.min(100, Math.max(0, state.socialImpact + finalImpactEffect)),
       trust: Math.min(100, Math.max(0, state.trust + adjustedTrustEffect)),
       momentum: Math.min(100, Math.max(0, state.momentum + momentumEffect)),
-      impactScore: Math.round(state.impactScore + (option.effect_impact * 2) + (adjustedTrustEffect * 1.5)),
+      impactScore: Math.round((state.impactScore || 0) + (finalImpactEffect * 2) + (adjustedTrustEffect * 1.5)),
+      yuktiCoins: Math.round((state.yuktiCoins || 0) + ykcReward),
       turnCount: newTurnCount,
     };
 
     const historyItem = {
       id: Math.random().toString(36).substring(7),
       challenge: state.currentChallenge,
-      chosenOption: option,
+      chosenOption: { ...option, effect_budget: finalBudgetEffect, effect_impact: finalImpactEffect },
       previousState: {
         trust: state.trust,
         socialImpact: state.socialImpact,
         budget: state.budget,
         timeElapsed: state.timeElapsed,
-        impactScore: state.impactScore,
+        impactScore: state.impactScore || 0,
       }
     };
     
@@ -302,14 +322,14 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                animate={{ opacity: 1, scale: 1 }}
                className="space-y-12"
             >
-              <div className="bg-white p-12 rounded-[3.5rem] shadow-2xl border-4 border-emerald-500/20 relative overflow-hidden">
+              <div className="bg-white dark:bg-slate-900 p-12 rounded-[3.5rem] shadow-2xl border-4 border-emerald-500/20 dark:border-emerald-500/10 relative overflow-hidden">
                 <div className="absolute -top-10 -right-10 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl" />
                 
                 <div className="text-center mb-12">
                    <div className="w-20 h-20 bg-emerald-500 text-white rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-500/20">
                       <Trophy size={40} />
                    </div>
-                   <h2 className="text-5xl font-headline font-black text-slate-900 tracking-tighter">{t('mission_accomplished')}</h2>
+                   <h2 className="text-5xl font-headline font-black text-slate-900 dark:text-white tracking-tighter">{t('mission_accomplished')}</h2>
                    <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-xs mt-2">{t('dossier')}: {state.scenarioName}</p>
                 </div>
 
@@ -320,9 +340,9 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                      { label: t('sustainability'), value: Math.min(100, Math.max(0, Math.round((state.trust * 0.4) + (state.socialImpact * 0.4) + ((state.budget / 100000) * 20)))), icon: TrendingUp, color: 'text-emerald-500' },
                      { label: t('total_score'), value: state.impactScore, icon: Sparkles, color: 'text-amber-500' }
                    ].map(kpi => (
-                     <div key={kpi.label} className="bg-slate-50 p-6 rounded-3xl border border-slate-100 text-center">
+                     <div key={kpi.label} className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl border border-slate-100 dark:border-white/5 text-center">
                         <kpi.icon className={cn("mx-auto mb-3", kpi.color)} size={24} />
-                        <p className="text-3xl font-black text-slate-900">{(kpi.value ?? 0).toLocaleString()}{kpi.label !== t('total_score') ? '%' : ''}</p>
+                        <p className="text-3xl font-black text-slate-900 dark:text-white">{(kpi.value ?? 0).toLocaleString()}{kpi.label !== t('total_score') ? '%' : ''}</p>
                         <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-1">{kpi.label}</p>
                      </div>
                    ))}
@@ -330,7 +350,7 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
 
                 <div className="bg-slate-950 rounded-[2.5rem] p-10 text-white mb-10 border-t-8 border-emerald-500">
                    <h3 className="text-2xl font-black mb-4 italic tracking-tight flex items-center gap-2">
-                      <Zap className="text-emerald-400" /> Executive Strategic Review
+                       <Zap className="text-emerald-400" /> Executive Strategic Review
                    </h3>
                    <p className="text-slate-400 text-lg leading-relaxed italic">
                       "Your leadership across the {state.scenarioName} mission has demonstrated exceptional {state.trust > 70 ? 'community trust building' : 'resource utilization'}. 
@@ -369,7 +389,7 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
 
               <button 
                 onClick={() => updateState({ currentPhase: 'discovery', status: 'active', decisions: [], turnCount: 0, budget: 50000, socialImpact: 0, trust: 50, impactScore: 0, currentMilestoneIndex: 0 })}
-                className="w-full py-6 bg-white text-slate-400 hover:text-primary rounded-3xl font-black uppercase tracking-widest text-sm transition-all border-2 border-dashed border-slate-200"
+                className="w-full py-6 bg-white dark:bg-slate-900 text-slate-400 hover:text-primary rounded-3xl font-black uppercase tracking-widest text-sm transition-all border-2 border-dashed border-slate-200 dark:border-slate-800"
               >
                 Archive Mission & Restart Simulator
               </button>
@@ -382,14 +402,14 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                    initial={{ opacity: 0, scale: 0.95 }}
                    animate={{ opacity: 1, scale: 1 }}
                    exit={{ opacity: 0, scale: 0.95 }}
-                   className="bg-white p-16 rounded-[3rem] shadow-sm border border-slate-100 h-full flex flex-col justify-center items-center text-center space-y-8"
+                   className="bg-white dark:bg-slate-900 p-16 rounded-[3rem] shadow-sm border border-slate-100 dark:border-slate-800 h-full flex flex-col justify-center items-center text-center space-y-8"
                 >
                   <div className="p-8 bg-primary/5 rounded-full animate-pulse">
                     <Radio className="text-primary w-16 h-16" />
                   </div>
                   <div className="max-w-md">
-                    <h3 className="text-4xl font-headline font-black text-on-surface mb-4">Mission Discovery</h3>
-                    <p className="text-slate-500 text-lg leading-relaxed">The AI has captured your vision. You can refine your ideation in the <b>Simulation Hub</b> or proceed to strategy mapping.</p>
+                    <h3 className="text-4xl font-headline font-black text-slate-900 dark:text-white mb-4">Mission Discovery</h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed">The AI has captured your vision. You can refine your ideation in the <b>Simulation Hub</b> or proceed to strategy mapping.</p>
                   </div>
                   <button 
                     onClick={() => updateState({ currentPhase: 'strategy' })}
@@ -449,11 +469,11 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                    transition={{ type: "spring", damping: 25, stiffness: 120 }}
                    className="space-y-6 relative"
                 >
-                  <div className="bg-white p-6 rounded-[2rem] border-2 border-slate-100 flex items-center justify-between shadow-sm">
+                  <div className="bg-white dark:bg-slate-900 p-6 rounded-[2rem] border-2 border-slate-100 dark:border-slate-800 flex items-center justify-between shadow-sm">
                     <div className="flex gap-4 items-center">
                       <div className="relative w-16 h-16">
                         <svg className="w-full h-full transform -rotate-90">
-                           <circle cx="32" cy="32" r="28" stroke="#f1f5f9" strokeWidth="5" fill="none" />
+                           <circle cx="32" cy="32" r="28" stroke="#f1f5f9" strokeWidth="5" fill="none" className="dark:stroke-slate-800" />
                            <motion.circle 
                              cx="32" cy="32" r="28" 
                              stroke="currentColor" 
@@ -465,19 +485,19 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                              strokeLinecap="round"
                            />
                         </svg>
-                        <div className="absolute inset-0 flex items-center justify-center font-black text-on-surface text-sm">
+                        <div className="absolute inset-0 flex items-center justify-center font-black text-slate-900 dark:text-white text-sm">
                            {state.currentMilestoneIndex + 1}/3
                         </div>
                       </div>
                       <div>
-                        <h4 className="text-xl font-black text-on-surface uppercase tracking-tight">
+                        <h4 className="text-xl font-black text-slate-900 dark:text-white uppercase tracking-tight">
                           {currentMilestone.name}
                         </h4>
                         <p className="text-[9px] text-slate-400 font-black uppercase tracking-[0.2em]">{currentMilestone.Goal}</p>
                       </div>
                     </div>
                     <div className="hidden md:flex gap-3">
-                       <div className="bg-slate-50 px-4 py-1.5 rounded-xl border border-slate-100 text-center">
+                       <div className="bg-slate-50 dark:bg-slate-800 px-4 py-1.5 rounded-xl border border-slate-100 dark:border-white/5 text-center">
                          <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Turn</p>
                          <p className="text-lg font-black text-primary">{(state.turnCount % 4) || 4}<span className="text-sm text-slate-300">/4</span></p>
                        </div>
@@ -556,13 +576,13 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                         x: [0, -10, 10, -10, 10, 0],
                         transition: { duration: 0.4 }
                       } : {}}
-                      className="bg-white p-8 rounded-[3rem] shadow-sm border-2 border-slate-100 flex flex-col min-h-[500px] relative overflow-hidden group"
+                      className="bg-white dark:bg-slate-900 p-8 rounded-[3rem] shadow-sm border-2 border-slate-100 dark:border-slate-800 flex flex-col min-h-[500px] relative overflow-hidden group"
                     >
                       <div className="relative z-10 flex-1 flex flex-col">
                         <div className="flex items-center justify-between mb-6">
                            <span className="bg-primary px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest text-white shadow-lg shadow-primary/20">Active Simulation</span>
                            {!isGenerating && state.decisions.length > 0 && (
-                             <button onClick={handleUndo} className="p-1.5 rounded-lg bg-slate-50 text-slate-400 hover:text-primary transition-all">
+                             <button onClick={handleUndo} className="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-primary transition-all">
                                <RotateCcw size={16} />
                              </button>
                            )}
@@ -580,35 +600,58 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                           </div>
                         ) : (
                           <>
-                            <div className="relative h-60 -mx-8 -mt-2 mb-8 overflow-hidden border-b-4 border-slate-50">
+                            <div className="relative h-60 -mx-8 -mt-2 mb-8 overflow-hidden border-b-4 border-slate-50 dark:border-slate-800">
                               <img 
                                 src={`https://picsum.photos/seed/${(state.currentChallenge as any)?.visual_keyword || 'impact'}/800/400`} 
                                 alt="Visual Context" 
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2000ms]"
                               />
-                              <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-slate-900 via-transparent to-transparent" />
                             </div>
-                            <h3 className="text-3xl font-headline font-black text-on-surface mb-4 leading-tight tracking-tight">
+                            <h3 className="text-3xl font-headline font-black text-slate-900 dark:text-white mb-4 leading-tight tracking-tight">
                               {typeof state.currentChallenge?.title === 'string' ? state.currentChallenge?.title : JSON.stringify(state.currentChallenge?.title)}
                             </h3>
-                            <p className="text-lg text-slate-600 leading-relaxed mb-8 italic font-medium opacity-80">
+                            <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed mb-8 italic font-medium opacity-80">
                               {typeof state.currentChallenge?.description === 'string' ? state.currentChallenge?.description : JSON.stringify(state.currentChallenge?.description)}
                             </p>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-auto">
                               {state.currentChallenge?.options.map((opt, i) => (
-                                <button
-                                  key={i}
-                                  onClick={() => handleDecision(opt)}
-                                  className="bg-slate-50 border-2 border-transparent p-6 rounded-[2rem] text-left hover:border-primary hover:bg-white transition-all group relative active:scale-[0.98] shadow-sm hover:shadow-xl"
-                                >
-                                  <p className="font-black text-on-surface text-lg mb-1 group-hover:text-primary transition-colors pr-8 leading-tight">
-                                    {typeof opt.text === 'string' ? opt.text : JSON.stringify(opt.text)}
-                                  </p>
-                                  <div className="w-8 h-8 rounded-xl bg-white border border-slate-100 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all absolute top-6 right-6">
-                                    <ArrowRight size={16} className="text-slate-300 group-hover:text-white" />
+                                <div key={i} className="flex flex-col gap-2">
+                                  <button
+                                    onClick={() => handleDecision(opt, i)}
+                                    className="bg-slate-50 dark:bg-slate-800 border-2 border-transparent p-6 rounded-[2rem] text-left hover:border-primary hover:bg-white dark:hover:bg-slate-700 transition-all group relative active:scale-[0.98] shadow-sm hover:shadow-xl dark:border-white/5 w-full"
+                                  >
+                                    <p className="font-black text-slate-900 dark:text-white text-lg mb-1 group-hover:text-primary transition-colors pr-8 leading-tight">
+                                      {typeof opt.text === 'string' ? opt.text : JSON.stringify(opt.text)}
+                                    </p>
+                                    <div className="w-8 h-8 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-white/5 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all absolute top-6 right-6">
+                                      <ArrowRight size={16} className="text-slate-300 group-hover:text-white" />
+                                    </div>
+                                  </button>
+                                  
+                                  {/* Input Overrides */}
+                                  <div className="flex gap-2 px-6">
+                                    <div className="flex-1 space-y-1">
+                                      <label className="text-[7px] font-black uppercase text-slate-400 tracking-widest pl-1">Amount ($)</label>
+                                      <input 
+                                        type="number" 
+                                        value={overrides[i]?.budget || 0}
+                                        onChange={(e) => setOverrides(prev => ({ ...prev, [i]: { ...prev[i], budget: parseInt(e.target.value) || 0 } }))}
+                                        className="w-full bg-slate-100 dark:bg-slate-800/50 rounded-lg px-3 py-1.5 text-[10px] font-bold text-emerald-500 outline-none border border-transparent focus:border-emerald-500/30"
+                                      />
+                                    </div>
+                                    <div className="flex-1 space-y-1">
+                                      <label className="text-[7px] font-black uppercase text-slate-400 tracking-widest pl-1">Impact (%)</label>
+                                      <input 
+                                        type="number" 
+                                        value={overrides[i]?.impact || 0}
+                                        onChange={(e) => setOverrides(prev => ({ ...prev, [i]: { ...prev[i], impact: parseInt(e.target.value) || 0 } }))}
+                                        className="w-full bg-slate-100 dark:bg-slate-800/50 rounded-lg px-3 py-1.5 text-[10px] font-bold text-primary outline-none border border-transparent focus:border-primary/30"
+                                      />
+                                    </div>
                                   </div>
-                                </button>
+                                </div>
                               ))}
                             </div>
                           </>
@@ -617,26 +660,26 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
                     </motion.section>
                   )}
 
-                  <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                  <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mb-6 flex items-center gap-3">
                       <Users size={14} className="text-primary" /> Council Sentiment
                     </h4>
                     <div className="flex gap-6 overflow-x-auto pb-2 scrollbar-hide">
                        {state.stakeholderFeedback.length === 0 ? (
-                         <div className="w-full text-center py-8 bg-slate-50 rounded-3xl border-2 border-dashed border-slate-100">
+                         <div className="w-full text-center py-8 bg-slate-50 dark:bg-slate-800 rounded-3xl border-2 border-dashed border-slate-100 dark:border-slate-800">
                             <p className="text-slate-400 font-bold italic text-sm">Observing baseline metrics...</p>
                          </div>
                        ) : (
                          state.stakeholderFeedback.map((f) => (
-                           <div key={f.id} className="flex-shrink-0 w-80 bg-slate-50 p-6 rounded-[2rem] border-2 border-white hover:bg-white hover:shadow-lg transition-all group">
+                           <div key={f.id} className="flex-shrink-0 w-80 bg-slate-50 dark:bg-slate-800 p-6 rounded-[2rem] border-2 border-white dark:border-white/5 hover:bg-white dark:hover:bg-slate-700 hover:shadow-lg transition-all group">
                              <div className="flex items-center gap-3 mb-4">
-                               <img src={f.avatar} className="w-10 h-10 rounded-xl shadow-md border-2 border-white" alt={f.name} />
+                               <img src={f.avatar} className="w-10 h-10 rounded-xl shadow-md border-2 border-white dark:border-white/10" alt={f.name} />
                                <div>
-                                 <p className="text-sm font-black text-on-surface leading-tight">{f.name}</p>
+                                 <p className="text-sm font-black text-slate-900 dark:text-white leading-tight">{f.name}</p>
                                  <p className="text-[8px] text-primary uppercase font-black tracking-widest">{f.role}</p>
                                </div>
                              </div>
-                             <p className="text-xs text-slate-600 leading-relaxed italic font-medium">"{f.message}"</p>
+                             <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed italic font-medium">"{f.message}"</p>
                            </div>
                          ))
                        )}
@@ -650,11 +693,11 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
       </div>
 
       <div className="col-span-12 lg:col-span-3 space-y-4">
-        <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 sticky top-10">
+        <div className="bg-white dark:bg-slate-900 p-8 rounded-[2.5rem] shadow-sm border border-slate-100 dark:border-slate-800 sticky top-10">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-8 text-center flex items-center justify-center gap-2">
-            <div className="w-8 h-0.5 bg-slate-100" />
+            <div className="w-8 h-0.5 bg-slate-100 dark:bg-slate-800" />
             Core Vitals
-            <div className="w-8 h-0.5 bg-slate-100" />
+            <div className="w-8 h-0.5 bg-slate-100 dark:bg-slate-800" />
           </p>
           
           <div className="space-y-8">
@@ -695,16 +738,16 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
               <div key={g.label} className="space-y-3">
                 <div className="flex justify-between items-end">
                    <div className="flex items-center gap-2">
-                      <div className={cn("p-2 rounded-lg border", `bg-${g.color}-50 text-${g.color}-600 border-${g.color}-100`)}>
+                      <div className={cn("p-2 rounded-lg border", `bg-${g.color}-50 dark:bg-${g.color}-950 text-${g.color}-600 dark:text-${g.color}-400 border-${g.color}-100 dark:border-${g.color}-900`)}>
                         <g.icon size={14} />
                       </div>
                       <span className="text-[9px] font-black uppercase text-slate-500 tracking-tighter">{g.label}</span>
                    </div>
-                   <span className="text-xl font-black text-on-surface">
+                   <span className="text-xl font-black text-slate-900 dark:text-white">
                      {g.prefix}{(g.value ?? 0).toLocaleString()}{g.suffix}
                    </span>
                 </div>
-                <div className="h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                <div className="h-3 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-200 dark:border-white/5">
                   <motion.div 
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(100, (g.value / g.max) * 100)}%` }}
@@ -718,13 +761,13 @@ export function ActiveWorkspace({ setActiveTab }: { setActiveTab: (tab: string) 
             ))}
           </div>
 
-          <div className="mt-12 pt-8 border-t-2 border-slate-50 space-y-4">
-             <div className="bg-slate-50 p-4 rounded-[1.5rem] border-2 border-slate-100">
+          <div className="mt-12 pt-8 border-t-2 border-slate-50 dark:border-slate-800 space-y-4">
+             <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-[1.5rem] border-2 border-slate-100 dark:border-white/5">
                <div className="flex items-center gap-2 mb-2">
                  <AlertTriangle size={12} className="text-amber-500" />
                  <span className="text-[9px] font-black uppercase text-slate-400">Survival Report</span>
                </div>
-               <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
+               <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
                  {state.budget < 10000 ? "🚨 INSUFFICIENT FUNDS. RUNWAY DEPLETED." : 
                   state.trust < 40 ? "⚠️ TRUST BREACH. STAKEHOLDERS RETREATING." : 
                   "✅ MODEL STABLE. PROCEED WITH GROWTH."}

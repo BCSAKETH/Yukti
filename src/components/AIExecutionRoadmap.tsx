@@ -50,22 +50,22 @@ export function AIExecutionRoadmap() {
       }
 
       const prompt = `
-You are a senior Social Entrepreneurship Architect. Building a venture from scratch is difficult, especially for beginners.
-Create an exhaustive, step-by-step Execution Flowchart Roadmap for the following venture idea.
+You are a world-class Social Venture Architect and Growth Strategist. You have helped scale ventures from zero to millions of lives impacted.
+Create an exhaustive, high-fidelity, and strategically accurate step-by-step Execution Roadmap for the following venture idea.
 
 **Venture Idea:** "${activeIdea}"
 
 **STRICT REQUIREMENTS:**
-Break the execution down into 5 evolutionary phases, from "Beginner/Validation" up to "Full Scale/Expansion".
-For each phase, you MUST explicitly answer:
-- **timeline (When)**: e.g., "Months 0-3"
-- **whatToDo (What)**: The primary objective.
-- **howToApproach (How)**: The strategic mindset and exact tactical approach.
-- **whereToExecute (Where)**: Where this happens (e.g., Local Community Centers, Digital Platforms, City Council).
-- **whichTools (Which)**: An array of 3 specific tools, resources, or frameworks needed.
-- **investors**: Array of 2-3 specific types of investors or funds to target (e.g., "Seed VCs targeting climate-tech", "Angel syndicates").
-- **governmentSchemes**: Array of 1-2 specific government grants, policies, or subsidies applicable.
-- **keyMetrics**: Array of 3 exact KPIs to track in this phase.
+1. **Phased Evolution**: Break the execution into 5 definitive phases: (1) Deep Discovery/Validation, (2) Minimum Viable Impact (MVI), (3) Unit Economic Optimization, (4) Systematic Scaling, (5) Global/National Integration.
+2. **For each phase, you MUST explicitly define**:
+   - **timeline (When)**: e.g., "Weeks 1-8" or "Months 6-12".
+   - **whatToDo (What)**: The primary strategic objective.
+   - **howToApproach (How)**: Provide a 3-step tactical "God-level" playbook. Be extremely specific (e.g., "Deploy a 'Shadow Audience' test on WhatsApp before building an app").
+   - **whereToExecute (Where)**: Specific digital or physical locations (e.g., "Tier 2 rural clusters in UP/Bihar", "LinkedIn Industry Groups").
+   - **whichTools (Which)**: Exactly 3 modern tools (e.g., "Tally for lead gen", "Notion for OS", "Bubble for MVP").
+   - **investors**: Exactly 2-3 specific types of funding sources (e.g., "Equity-free CSR grants", "Climate-focused seed funds").
+   - **governmentSchemes**: Exactly 2 applicable schemes with their REAL names.
+   - **keyMetrics**: Exactly 3 precise KPIs (e.g., "Customer Acquisition Cost (CAC) < $LTV", "NPS > 70").
 
 **OUTPUT FORMAT:**
 Strict JSON object only:
@@ -73,15 +73,15 @@ Strict JSON object only:
   "missionGoal": "1-sentence overarching goal",
   "phases": [
     {
-      "phaseName": "Phase 1: Idea Validation",
-      "timeline": "Months 0-2",
+      "phaseName": "Phase 1: Deep Discovery",
+      "timeline": "...",
       "whatToDo": "...",
-      "howToApproach": "...",
+      "howToApproach": "Step 1: ...; Step 2: ...; Step 3: ...",
       "whereToExecute": "...",
-      "whichTools": ["Tool A"],
-      "investors": ["Angel List Syndicates"],
-      "governmentSchemes": ["SBIR Phase 1"],
-      "keyMetrics": ["100 Customer Interviews"]
+      "whichTools": ["..."],
+      "investors": ["..."],
+      "governmentSchemes": ["..."],
+      "keyMetrics": ["..."]
     }
   ]
 }

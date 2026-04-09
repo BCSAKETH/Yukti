@@ -155,10 +155,10 @@ export function Dashboard({ setActiveTab }: { setActiveTab: (tab: string) => voi
               </div>
             </div>
             <div>
-              <div className="text-5xl font-headline font-black text-on-surface tracking-tighter">{state.impactScore}</div>
+              <div className="text-5xl font-headline font-black text-on-surface tracking-tighter">{state.impactScore ?? 0}</div>
               <div className="flex items-center gap-3 mt-4">
                 <div className="h-1.5 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                   <motion.div initial={{ width: 0 }} animate={{ width: `${state.impactScore}%` }} className="h-full bg-teal-500" />
+                   <motion.div initial={{ width: 0 }} animate={{ width: `${state.impactScore ?? 0}%` }} className="h-full bg-teal-500" />
                 </div>
                 <span className="text-xs font-black text-teal-600 uppercase">Mastery Level</span>
               </div>

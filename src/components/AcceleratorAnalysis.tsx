@@ -90,6 +90,7 @@ interface AnalysisResult {
     recommendedNextSteps: string;
     deepDiveAnalysis?: { insight: string; action: string }[];
   };
+  perfectPitchStrategy?: string;
 }
 
 export function AcceleratorAnalysis() {
@@ -124,8 +125,8 @@ export function AcceleratorAnalysis() {
         throw new Error('Groq API Key is missing. Please check your environment variables.');
       }
 
-      const prompt = `
-You are a high-fidelity startup accelerator analyst. Evaluate this venture pitch within the context of its current performance metrics.
+        const prompt = `
+You are a high-fidelity startup accelerator analyst. Evaluate this venture pitch within the context of its current performance metrics and global social impact standards.
 
 **Venture Context:**
 - **Pitch:** "${state.pitch}"
@@ -135,14 +136,16 @@ You are a high-fidelity startup accelerator analyst. Evaluate this venture pitch
   - Stakeholder Trust: ${state.trust}%
   - Social Impact Score: ${state.impactScore}
   - Operating Budget: $${state.budget}
+  - Momentum: ${state.momentum || 0}%
 
 **STRICT REQUIREMENTS:**
 1. **Accelerator Matches**: Identify 4 REAL, high-growth startups from Y Combinator, Techstars, or 500 Global that directly align with this pitch. Provide their EXACT names, similarity scores, and specific funding milestones they achieved.
 2. **Gap Analysis**: Compare the venture against these benchmarks. Since the current Impact Score is ${state.impactScore}, identify exactly why this score is ${state.impactScore < 50 ? 'lagging' : 'performing'} relative to top-tier social enterprises.
-3. **Banking Constraints**: Identify 3 specific financial hurdles (e.g., "Lack of collateral for debt", "High interest rates for social ventures") and recommend an action to overcome them.
-4. **Government Schemes**: Focus on EXACT, verifiable government grants in "${state.location}". Use real names like "National Health Mission Grants" or "SBIR Phase I". Provide realistic funding amounts.
-5. **Optimal Schemas**: Suggest 3 specific structural models (e.g. "Hybrid 80/20 non-profit", "B-Corp ESG structure") that would optimize a budget of $${state.budget}.
-6. **Metric-Driven Summary**: Provide an "Executive Grade" masterclass summary. Reference the ${state.trust}% Trust level - if it is low, explain the immediate reputational risk.
+3. **ESG & Impact Scoring**: Provide a predictive ESG (Environmental, Social, Governance) score based on the pitch. Identify one "Impact Alpha" opportunity—a way to generate more impact than peers by using a unique technology or model.
+4. **Banking Constraints**: Identify 3 specific financial hurdles (e.g., "Lack of collateral for debt", "High interest rates for social ventures") and recommend an action to overcome them.
+5. **Government Schemes**: Focus on EXACT, verifiable government grants in "${state.location}". Use real names like "National Health Mission Grants" or "SBIR Phase I". Provide realistic funding amounts.
+6. **Optimal Schemas**: Suggest 3 specific structural models (e.g. "Hybrid 80/20 non-profit", "B-Corp ESG structure") that would optimize a budget of $${state.budget}.
+7. **Metric-Driven Summary**: Provide an "Executive Grade" masterclass summary. Reference the ${state.trust}% Trust level - if it is low, explain the immediate reputational risk and provide a "Recovery Protocol".
 
 **OUTPUT FORMAT:**
 Strict JSON object translated into ${state.gameLanguage || 'English'} containing:
@@ -155,6 +158,7 @@ Strict JSON object translated into ${state.gameLanguage || 'English'} containing
   "overallReadiness": number,
   "bestAccelerator": string,
   "bestGovernmentScheme": string,
+  "perfectPitchStrategy": "A 3-sentence, hard-hitting elevator pitch specifically tailored for the Boardroom investors, answering 'Why this?', 'Why now?', and 'What is the exact financial ask?'",
   "summary": { "pitch", "keyChallenge", "recommendedNextSteps", "deepDiveAnalysis": [{"insight", "action"}] }
 }
       `;
@@ -614,6 +618,29 @@ Strict JSON object translated into ${state.gameLanguage || 'English'} containing
                     )}
                   </AnimatePresence>
                 </div>
+
+                {/* Perfect Pitch Training Card */}
+                {result.perfectPitchStrategy && (
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-10 rounded-[2.5rem] bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-2xl relative overflow-hidden group mb-8">
+                    <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-1000">
+                      <Target size={120} />
+                    </div>
+                    <div className="relative z-10 space-y-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20">
+                          <Zap size={24} className="text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-headline font-black tracking-tight leading-none">Boardroom Perfect Pitch</h3>
+                          <p className="text-[10px] font-black uppercase tracking-widest text-amber-200 mt-1">Memorize this strategy</p>
+                        </div>
+                      </div>
+                      <div className="bg-black/20 rounded-3xl p-6 border border-white/10 backdrop-blur-sm">
+                        <p className="text-lg font-bold leading-relaxed italic">"{safeRender(result.perfectPitchStrategy)}"</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
 
                 {/* Top Highlights repositioned below Gap Analysis */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

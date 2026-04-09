@@ -125,14 +125,14 @@ export function SprintGame({ idea: initialIdea, language, onComplete, onCancel }
         Language: ${language}.
         ${isNextCrisis ? 'THIS IS A CRISIS TURN! Make it high stakes and high stress.' : 'Normal turn.'}
         
-        Generate a visual scenario.
+        Generate a visual scenario in STRICT JSON format.
         {
-          "scene": "${isNextCrisis ? 'STOP! EMERGENCY! ' : ''} Cartoonish drama description",
-          "visual_keyword": "object like 'water-tank', 'drone', 'clinic', 'protest', 'fire'",
+          "scene": "${isNextCrisis ? 'STOP! EMERGENCY! ' : ''} Describe a cartoonish, exaggerated business drama",
+          "visual_keyword": "single word object like 'water-tank', 'drone', 'clinic', 'protest', 'fire'",
           "options": [
-            { "text": "Action A ${isNextCrisis ? '(Risky Fix)' : '(Safe)'}", "impact": ${isNextCrisis ? 30 : 10}, "energy_cost": ${isNextCrisis ? 20 : 5}, "reaction": "Steady progress!", "mood": "success" },
-            { "text": "Action B ${isNextCrisis ? '(Emergency Measure)' : '(Bold)'}", "impact": ${isNextCrisis ? 50 : 25}, "energy_cost": ${isNextCrisis ? 40 : 30}, "reaction": "KA-POW!", "mood": "success" },
-            { "text": "Action C ${isNextCrisis ? '(Panic Move)' : '(Risky)'}", "impact": ${isNextCrisis ? -30 : -10}, "energy_cost": ${isNextCrisis ? 10 : 15}, "reaction": "Yikes!", "mood": "warning" }
+            { "text": "Specific, actionable business strategy (max 5 words. Do NOT use labels like 'Safe' or 'Risky')", "impact": ${isNextCrisis ? 30 : 10}, "energy_cost": ${isNextCrisis ? 20 : 5}, "reaction": "Steady progress!", "mood": "success" },
+            { "text": "A completely different, contrasting action (max 5 words)", "impact": ${isNextCrisis ? 50 : 25}, "energy_cost": ${isNextCrisis ? 40 : 30}, "reaction": "KA-POW!", "mood": "success" },
+            { "text": "A controversial or extreme pivot (max 5 words)", "impact": ${isNextCrisis ? -30 : -10}, "energy_cost": ${isNextCrisis ? 10 : 15}, "reaction": "Yikes!", "mood": "warning" }
           ]
         }
       `;

@@ -14,6 +14,7 @@ import { Toaster } from 'sonner';
 
 import { StartupDictionary } from './components/StartupDictionary';
 import { AIMeetingRoom } from './components/AIMeetingRoom';
+import { EcosystemDirectory } from './components/EcosystemDirectory';
 
 function AppContent() {
   const { user, loading } = useAuth();
@@ -39,7 +40,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen mesh-gradient-light selection:bg-primary/20 relative">
+    <div className="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100 selection:bg-primary/20 relative transition-colors duration-300">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
       <div className="ml-64 min-h-screen flex flex-col">
@@ -59,11 +60,16 @@ function AppContent() {
               {activeTab === 'workspace' && <ActiveWorkspace setActiveTab={setActiveTab} />}
               {activeTab === 'boardroom' && <AIMeetingRoom onClose={() => setActiveTab('hub')} />}
               {activeTab === 'dictionary' && <StartupDictionary />}
+              {activeTab === 'ecosystem' && <EcosystemDirectory />}
               {activeTab === 'sprint' && <SprintGame 
                 key={`sprint-game-${customSprintIdea ? 'custom' : 'empty'}`}
                 idea={customSprintIdea || ''} 
                 language={state.gameLanguage || 'English'} 
-                onComplete={() => {
+                onComplete={(score) => {
+                  const ykcGain = score * 10;
+                  updateState({ 
+                    yuktiCoins: (state.yuktiCoins || 0) + ykcGain 
+                  });
                   setCustomSprintIdea(null);
                   setActiveTab('workspace');
                 }}

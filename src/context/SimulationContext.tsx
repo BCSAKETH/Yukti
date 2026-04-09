@@ -79,6 +79,7 @@ export interface SimulationState {
     improvement: string;
     consequences: string;
   } | null;
+  yuktiCoins: number;
 }
 
 export interface SimulationContextType {
@@ -120,6 +121,7 @@ const initialState: SimulationState = {
   pitch: '',
   showBoardroom: false,
   mentorFeedback: null,
+  yuktiCoins: 1000,
 };
 
 const SimulationContext = createContext<SimulationContextType | undefined>(undefined);
@@ -147,9 +149,11 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
     const storedSims = localStorage.getItem('yukti_local_portfolio');
     if (storedSims) {
       try {
-        setLocalSims(JSON.parse(storedSims));
+        const parsed = JSON.parse(storedSims);
+        setLocalSims(Array.isArray(parsed) ? parsed : []);
       } catch (e) {
         console.error('Failed to parse local portfolio');
+        setLocalSims([]);
       }
     }
 
@@ -215,6 +219,7 @@ export function SimulationProvider({ children }: { children: React.ReactNode }) 
       budget: 50000,
       trust: 100,
       momentum: 50,
+      yuktiCoins: state.yuktiCoins || 1000,
       currentPhase: 'discovery',
       pitch: scenario.pitch || '',
       location: scenario.location || '',
